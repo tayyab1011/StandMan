@@ -49,6 +49,7 @@ dependencies:
   url_launcher: ^6.3.0
   flutter_file_downloader: ^2.0.0
   smooth_page_indicator: ^1.2.0+3
+  flutter_rating_bar: ^4.0.1
   
 
 

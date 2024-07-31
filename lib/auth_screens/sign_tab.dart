@@ -18,6 +18,7 @@ class _SignTabState extends State<SignTab> {
       length: 2,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: Center(
             child: Column(
               children: [
@@ -35,22 +36,50 @@ class _SignTabState extends State<SignTab> {
 
                   ),
                    const SizedBox(height: 25,),
-                  TabBar(
+                  Container(
+
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color:Colors.grey.shade50,),
+                 child: Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: TabBar(
                     labelStyle: GoogleFonts.outfit(
                       textStyle: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500)
                     ),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                    color: Colors.white, // Background color of the selected tab
+                    borderRadius: BorderRadius.circular(15.0), // Rounded corners for the selected tab
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(66, 99, 93, 93), // Shadow color
+                        offset: Offset(0, 1), // Shadow offset
+                        blurRadius: 4.0, // Shadow blur radius
+                      ),
+                    ],
+                                   ),
                     tabAlignment: TabAlignment.center,
                     unselectedLabelColor: GlobalVariables.iconColor,
                     labelColor: Colors.black,
-                    indicator: const BoxDecoration(
-                    color: Colors.transparent, // Removes the underline
-                  ),
                     dividerHeight: 0,             
                     tabs: const [
-                      Tab(text: 'Customer'),
-                      Tab(text: 'StandMan'),
-                    ],
+                    Tab(
+                    child: Center(child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Customer'),
+                    )),
                   ),
+                     Tab(
+                    child: Center(child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('StandMan'),
+                    )),
+                  )
+                    ],
+                                 ),
+                 ),
+               ),
                   const Expanded(
                     child: TabBarView(children: [
                       SignUp(),

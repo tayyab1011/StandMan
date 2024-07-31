@@ -66,7 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         color: Colors.black,
                       )),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(
                       descriptions[index],
                       textAlign: TextAlign.center,

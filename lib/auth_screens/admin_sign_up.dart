@@ -26,6 +26,7 @@ class _AdminSignUpState extends State<AdminSignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(

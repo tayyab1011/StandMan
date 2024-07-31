@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/home_screens/home_screen.dart';
+import 'package:standman/home_screens/my_jobs.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -26,16 +27,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     screens = [
       const HomeScreen(),
-      Container(child: Center(child: Text('Helloo'),),),
-      Container(child: Center(child: Text('Helloo'),),),
-      Container(child: Center(child: Text('Helloo'),),),
-      Container(child: Center(child: Text('Helloo'),),)
+      Container(child: Center(child: Text('Helloooooo'),),),
+      Container(child: Center(child: Text('Hello'),),),
+      const MyJobs(),
+      Container(child: Center(child: Text('Hellooooo'),),)
     ];
   }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      
+
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         currentIndex: _selectedItem,
         type: BottomNavigationBarType.fixed,
         onTap: onTap,
@@ -50,21 +55,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
         activeIcon:  SvgPicture.asset('assets/images/home1.svg'),
         label: "Home",
         
-        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/home2.svg'),
-        activeIcon:  SvgPicture.asset('assets/images/home1.svg'),
-        label: "Home",
+        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/message2.svg'),
+        activeIcon:  SvgPicture.asset('assets/images/messages1.svg'),
+        label: "Messages",
         
-        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/home2.svg'),
-        activeIcon:  SvgPicture.asset('assets/images/home1.svg'),
-        label: "Home",
+        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/wlt.svg'),
+        activeIcon:  SvgPicture.asset('assets/images/wallet1.svg'),
+        label: "Wallet",
         
-        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/home2.svg'),
-        activeIcon:  SvgPicture.asset('assets/images/home1.svg'),
-        label: "Home",
+        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/jobs2.svg'),
+        activeIcon:  SvgPicture.asset('assets/images/jobs1.svg'),
+        label: "My Jobs",
         
-        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/home2.svg'),
-        activeIcon:  SvgPicture.asset('assets/images/home1.svg'),
-        label: "Home",
+        ),BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/profile2.svg'),
+        activeIcon:  SvgPicture.asset('assets/images/profile1.svg'),
+        label: "Profile",
         
         )
       ],),
