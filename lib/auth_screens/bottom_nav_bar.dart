@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:standman/home_screens/chat_screen.dart';
 import 'package:standman/home_screens/home_screen.dart';
 import 'package:standman/home_screens/my_jobs.dart';
+import 'package:standman/home_screens/profile_screen.dart';
+import 'package:standman/home_screens/wallet_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -23,14 +26,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     screens = [
       const HomeScreen(),
-      Container(child: Center(child: Text('Helloooooo'),),),
-      Container(child: Center(child: Text('Hello'),),),
+      const ChatScreen(),
+      const WalletScreen(),
       const MyJobs(),
-      Container(child: Center(child: Text('Hellooooo'),),)
+      const ProfileScreen()
     ];
   }
   @override

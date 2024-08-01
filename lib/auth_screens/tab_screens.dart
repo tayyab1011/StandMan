@@ -28,6 +28,9 @@ class _TabScreensState extends State<TabScreens> {
           backgroundColor: Colors.white,
           body: Column(
             children: [
+              const SizedBox(
+                height: 20,
+              ),
               SvgPicture.asset(
                 'assets/images/logo2.svg',
                 width: 146,
@@ -47,9 +50,7 @@ class _TabScreensState extends State<TabScreens> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              
               Text(
                 "Please Login to your account",
                 textAlign: TextAlign.center,

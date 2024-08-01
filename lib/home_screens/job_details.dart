@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:standman/bottom_sheets/show_notes_sheet.dart';
-import 'package:standman/bottom_sheets/show_payments_sheet.dart';
-import 'package:standman/dialogs/job_posted_dialog.dart';
+import 'package:standman/bottom_sheets/job_completed_sheet.dart';
 import 'package:standman/global_variables/global_variables.dart';
 
 class JobDetails extends StatefulWidget {
@@ -355,7 +353,11 @@ class _JobDetailsState extends State<JobDetails> {
             ),
             GestureDetector(
                 onTap: () async {
-                  _showBottomSheet(context);
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const JobCompletedSheet();
+                      });
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 30),
@@ -383,13 +385,5 @@ class _JobDetailsState extends State<JobDetails> {
         ),
       ),
     );
-  }
-
-  void _showBottomSheet(BuildContext context) async {
-    return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return const ShowPaymentsSheet();
-        });
   }
 }

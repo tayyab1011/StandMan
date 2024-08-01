@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:standman/drawer_screens/notification.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/home_screens/location.dart';
 
@@ -13,22 +14,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int selectedIndex = 0;
   bool _isLoading = false;
+
+   changeSelectedIndex(int index){
+    setState(() {
+      selectedIndex = index;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // Set status bar color to transparent
-      statusBarIconBrightness: Brightness.light, // Set status bar icon color
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: GlobalVariables.buttonColor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
-          leading: Image.asset(
-            'assets/images/menu.png',
-            height: 24,
-            width: 24,
+          leading: IconButton(
+            onPressed: () {
+              _scaffoldKey.currentState?.openDrawer();
+            },
+            icon: Image.asset(
+              'assets/images/menu.png',
+              height: 24,
+              width: 24,
+            ),
           ),
           actions: [
             Padding(
@@ -55,6 +70,144 @@ class _HomeScreenState extends State<HomeScreen> {
           flexibleSpace: Container(
             decoration: const BoxDecoration(color: GlobalVariables.buttonColor),
           ),
+        ),
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+                margin: const EdgeInsets.only(bottom: 0.0),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/women.png',
+                      height: 90,
+                      width: 103,
+                    ),
+                    Text(
+                      "Marvis Ighedosa",
+                      style: GoogleFonts.outfit(
+                          textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black)),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/email.svg',
+                          height: 15,
+                        ),
+                        const SizedBox(
+                          width: 2,
+                        ),
+                        Text(
+                          "Dosamarvis@gmail.com",
+                          style: GoogleFonts.outfit(
+                              textStyle: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey)),
+                        ),
+                      ],
+                    ),
+                  ],
+                )),
+            ListTile(
+              selected: selectedIndex==0,
+              onTap:(){
+                changeSelectedIndex(0);
+                print('o is pressed');
+              },
+              horizontalTitleGap: 30,
+              title: Text(
+                "Home",
+                style: GoogleFonts.outfit(
+                    textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black)),
+              ),
+              leading: SvgPicture.asset('assets/images/home2.svg'),
+            ),
+            ListTile(
+              selected: selectedIndex==1,
+              onTap: (){
+                changeSelectedIndex(1);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const NotificationScreen()));
+              },
+              horizontalTitleGap: 30,
+              title: Text(
+                "Notification",
+                style: GoogleFonts.outfit(
+                    textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black)),
+              ),
+              leading: Image.asset(
+                "assets/images/notify.png",
+                height: 24,
+                width: 24,
+              ),
+            ),
+            ListTile(
+              selected: selectedIndex == 2,
+              onTap: (){
+                changeSelectedIndex(2);
+                print('2nd is pressed');
+              },
+              horizontalTitleGap: 30,
+              title: Text(
+                "Privacy Policy",
+                style: GoogleFonts.outfit(
+                    textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black)),
+              ),
+              leading: SvgPicture.asset('assets/images/privacy.svg'),
+            ),
+            ListTile(
+              selected: selectedIndex==3,
+              onTap: (){
+                changeSelectedIndex(3);
+                print('3rd is pressed');
+              },
+              horizontalTitleGap: 30,
+              title: Text(
+                "Terms And Conditions",
+                style: GoogleFonts.outfit(
+                    textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black)),
+              ),
+              leading: SvgPicture.asset('assets/images/privacy.svg'),
+            ),
+            
+            ListTile(
+              selected: selectedIndex==4,
+              onTap: (){
+                changeSelectedIndex(4);
+                print('4th is pressed');
+              },
+              horizontalTitleGap: 30,
+              title: Text(
+                "Sign Out",
+                style: GoogleFonts.outfit(
+                    textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black)),
+              ),
+              leading: SvgPicture.asset('assets/images/sign_out.svg'),
+            ),
+
+          ],
         ),
       ),
       body: Column(
@@ -154,9 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                
                 Expanded(
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -221,7 +372,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           width: 4,
                                         ),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Wade Warren',
@@ -234,16 +386,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             Row(
                                               children: [
-                                                SvgPicture.asset('assets/images/star.svg'),
-                                                  const SizedBox(width: 1,),
+                                                SvgPicture.asset(
+                                                    'assets/images/star.svg'),
+                                                const SizedBox(
+                                                  width: 1,
+                                                ),
                                                 Text(
                                                   '4.5',
                                                   style: GoogleFonts.outfit(
-                                                      textStyle: const TextStyle(
-                                                          fontSize: 8,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Colors.grey)),
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              fontSize: 8,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color:
+                                                                  Colors.grey)),
                                                 ),
                                               ],
                                             ),

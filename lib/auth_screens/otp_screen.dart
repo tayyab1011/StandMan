@@ -56,7 +56,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 const SizedBox(height: 10),
                 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 70.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 85.0),
                   child: PinCodeTextField(
                     controller: otp,
                     pastedTextStyle: const TextStyle(color: Colors.black),
@@ -66,7 +66,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       inactiveColor: Colors.grey,
                       activeColor: Colors.grey,
                       fieldHeight: 60,
-                      fieldWidth: 10,
+                      fieldWidth: 12,
                     ),
                     keyboardType: TextInputType.phone,
                     appContext: context,

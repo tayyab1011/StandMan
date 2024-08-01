@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: Colors.grey.withOpacity(0.15)))),
                       ),
                       const SizedBox(
-                        height: 28,
+                        height: 25,
                       ),
                       Text(
                         "Password",
@@ -151,9 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 2,
-              ),
+              
               GestureDetector(
                   onTap: () async {
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainScreen()));

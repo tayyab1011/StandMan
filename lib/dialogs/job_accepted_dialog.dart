@@ -87,7 +87,7 @@ class _JobAcceptedDialogState extends State<JobAcceptedDialog> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Container(
