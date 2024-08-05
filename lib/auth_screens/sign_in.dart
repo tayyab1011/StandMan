@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/auth_screens/forgot_screen.dart';
 import 'package:standman/auth_screens/sign_tab.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/home_screens/main_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:standman/models/sign_in_model.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +24,47 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obsecureText = true;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  SignInModel signInModel = SignInModel();
+
+  signIn() async{
+    var headersList = {
+ 'Accept': '*/*',
+ 'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+ 'Content-Type': 'application/json' 
+};
+
+
+var url = Uri.parse('http://192.168.1.18:3000/api/signIn');
+
+
+var body = {
+   "email": emailController.text,
+    "password": passController.text
+    
+} ;
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200) {
+  signInModel = signInModelFromJson(resBody);
+  if(mounted){
+    setState(() {
+      
+    });
+  }
+  print(resBody);
+}
+else {
+  signInModel = signInModelFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
 
 
   @override
@@ -154,7 +200,16 @@ class _LoginScreenState extends State<LoginScreen> {
               
               GestureDetector(
                   onTap: () async {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainScreen()));
+                   if(emailController.text.isNotEmpty&&passController.text.isNotEmpty){
+                    await signIn();
+                    if(signInModel.status == "success"){
+                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainScreen()));
+                       CustomToast.showToast(message: 'Login Successfull');
+                    }
+                    else{
+                      CustomToast.showToast(message: signInModel.message.toString());
+                    }
+                   }
                   },
                   child: Container(
                     height: 54,

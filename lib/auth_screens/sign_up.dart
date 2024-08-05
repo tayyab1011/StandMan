@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:standman/auth_screens/tab_screens.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:http/http.dart' as http;
+import 'package:standman/helper/custom_toast.dart';
+import 'package:standman/models/signup_model.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -14,14 +21,68 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   TextEditingController emailController = TextEditingController();
-  TextEditingController confrim = TextEditingController();
+  TextEditingController confrim =         TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
-  TextEditingController passController = TextEditingController();
+  TextEditingController passController  = TextEditingController();
   bool _obsecureText = true;
   bool _obsecureText2 = true;
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+  SignUpModel signUpModel = SignUpModel();
 
-  bool _isLoading = false;
+  Future<void> pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+  Future<String> _convertImageToBase64(File imageFile) async {
+  final bytes = await imageFile.readAsBytes();
+  return base64Encode(bytes);
+}
+
+ bool _isLoading = false;
+//Api call for sign up
+ signUp() async {
+  var url = Uri.parse('http://192.168.1.18:3000/api/signup'); // Update to the actual server IP
+
+  var request = http.MultipartRequest('POST', url);
+  request.fields['user_customer_type'] = "Customer";
+  request.fields['first_name'] = fNameController.text;
+  request.fields['last_name'] = lNameController.text;
+  request.fields['phone'] = phoneController.text;
+  request.fields['email'] = emailController.text;
+  request.fields['password'] = passController.text;
+  request.fields['confirm_password'] = confrim.text;
+
+  if (_image != null) {
+    request.files.add(await http.MultipartFile.fromPath('profile', _image!.path));
+  }
+
+  print('Request Fields: ${request.fields}');
+  print('Request Files: ${request.files}');
+
+  var res = await request.send();
+  final resBody = await res.stream.bytesToString();
+
+  print('Response Status Code: ${res.statusCode}');
+  print('Response Body: $resBody');
+
+  if (res.statusCode == 200) {
+    signUpModel = signUpModelFromJson(resBody);
+    print('SignUp Model: $signUpModel');
+    if (mounted) {
+      setState(() {});
+    }
+  } else {
+    print('Error Reason: ${res.reasonPhrase}');
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +92,7 @@ class _SignUpState extends State<SignUp> {
           child: Center(
         child: SingleChildScrollView(
           child: Column(
+            
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -38,24 +100,41 @@ class _SignUpState extends State<SignUp> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     const SizedBox(height: 20,),
-                     Center(
-                       child: SizedBox(
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: SizedBox(
                         height: 125,
                         width: 110,
-                         child: Stack(
+                        child: Stack(
                           children: [
-                            SvgPicture.asset('assets/images/ellipse.svg'),
+                            // ignore: unnecessary_null_comparison
+                            _image != null
+                                ? Container(
+                                    width: 110,
+                                    height: 125,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: FileImage(_image!))),
+                                  )
+                                : SvgPicture.asset('assets/images/ellipse.svg'),
                             Positioned(
                               top: -4,
-                              left: -9,  
-                              child: SvgPicture.asset('assets/images/camera.svg'),)
+                              left: -9,
+                              child: GestureDetector(
+                                  onTap: pickImage,
+                                  child: SvgPicture.asset(
+                                      'assets/images/camera.svg')),
+                            )
                           ],
-                         ),
-                       ),
-                     ),
+                        ),
+                      ),
+                    ),
                     Text(
-                      textAlign:TextAlign.center,
+                      textAlign: TextAlign.center,
                       "We will verify your account within 1-3 business days. Please note that this timeframe is an average and not a guarantee. Depending on the current volume, the verification process could be faster or slower.",
                       style: GoogleFonts.outfit(
                           textStyle: const TextStyle(
@@ -63,7 +142,9 @@ class _SignUpState extends State<SignUp> {
                               fontSize: 16,
                               fontWeight: FontWeight.w300)),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Text(
                       "Phone Number",
                       style: GoogleFonts.outfit(
@@ -73,10 +154,11 @@ class _SignUpState extends State<SignUp> {
                               fontWeight: FontWeight.w300)),
                     ),
                     IntlPhoneField(
+                      controller: phoneController,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
                           hintText: 'Phone Number',
-                           hintStyle: const TextStyle(
+                          hintStyle: const TextStyle(
                             color: GlobalVariables.iconColor,
                             fontWeight: FontWeight.normal,
                           ),
@@ -229,6 +311,15 @@ class _SignUpState extends State<SignUp> {
                               fontWeight: FontWeight.w300)),
                     ),
                     TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your Email  ';
+                        }
+                        if (value.length < 6) {
+                          return 'Please enter 6 digit password ';
+                        }
+                        return null;
+                      },
                       obscureText: _obsecureText,
                       controller: passController,
                       cursorColor: Colors.black,
@@ -264,7 +355,7 @@ class _SignUpState extends State<SignUp> {
                               borderSide: BorderSide(
                                   color: Colors.grey.withOpacity(0.15)))),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Text(
@@ -349,7 +440,24 @@ class _SignUpState extends State<SignUp> {
                 height: 30,
               ),
               GestureDetector(
-                  onTap: () async {},
+                  onTap: () async {
+                    if (emailController.text.isNotEmpty &&
+                        phoneController.text.isNotEmpty &&
+                        passController.text.isNotEmpty) {
+                      print(emailController.text);
+                      print(phoneController.text);
+                      print(lNameController.text);
+                      await signUp();
+                      if (signUpModel.status == 'success') {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => const TabScreens()));
+                        CustomToast.showToast(message: "Sign Up Successfull");
+                      } else {
+                        CustomToast.showToast(
+                            message: "${signUpModel.message}");
+                      }
+                    }
+                  },
                   child: Container(
                     height: 54,
                     width: 286,
@@ -362,7 +470,7 @@ class _SignUpState extends State<SignUp> {
                               color: Colors.white,
                             )
                           : Text(
-                              'LOGIN',
+                              'SignUp',
                               style: GoogleFonts.outfit(
                                   textStyle: const TextStyle(
                                       fontSize: 14,

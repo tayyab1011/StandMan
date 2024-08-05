@@ -55,6 +55,7 @@ class _JobDetailsState extends State<JobDetails> {
     }
   }
 
+
   void _handleDateSelection() {
     selectDate(context);
   }

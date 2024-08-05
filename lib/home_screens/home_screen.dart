@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/drawer_screens/notification.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/home_screens/location.dart';
+import 'package:standman/policies/privacy_policy.dart';
+import 'package:standman/policies/terms_and_conditions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -158,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
               selected: selectedIndex == 2,
               onTap: (){
                 changeSelectedIndex(2);
-                print('2nd is pressed');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const PrivacyPolicy()));
               },
               horizontalTitleGap: 30,
               title: Text(
@@ -175,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
               selected: selectedIndex==3,
               onTap: (){
                 changeSelectedIndex(3);
-                print('3rd is pressed');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const TermsAndConditions()));
               },
               horizontalTitleGap: 30,
               title: Text(

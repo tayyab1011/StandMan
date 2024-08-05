@@ -54,7 +54,6 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 85.0),
                   child: PinCodeTextField(
@@ -76,8 +75,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 const SizedBox(height: 65),
                 GestureDetector(
                     onTap: () async {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => NewPassword()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const NewPassword()));
                     },
                     child: Container(
                       height: 54,

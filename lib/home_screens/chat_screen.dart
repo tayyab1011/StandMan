@@ -13,17 +13,15 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      
+    return Scaffold(
       backgroundColor: GlobalVariables.buttonColor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: AppBar(
-          leading:  Image.asset(
-              'assets/images/menu.png',
-              height: 24,
-              width: 24,
-            
+          leading: Image.asset(
+            'assets/images/menu.png',
+            height: 24,
+            width: 24,
           ),
           actions: [
             Padding(
@@ -35,6 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ],
+          
           centerTitle: true,
           title: Text(
             "Chat",
@@ -56,68 +55,67 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  color: Colors.white),
-                  child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        
-                        return Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            ListTile(
-                              horizontalTitleGap: 9,
-                              leading: Image.asset(
-                                'assets/images/women.png',
-                                height: 44,
-                                width: 44,
-                              ),
-                              title: Text(
-                                'Marvis Ighedosa',
-                                style: GoogleFonts.outfit(
-                                    textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black)),
-                              ),
-                              subtitle: Text(
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                'Hai Rizal, I’m on the way to your home i hope you are there',
-                                style: GoogleFonts.outfit(
-                                    textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.grey)),
-                              ),
-                              trailing: Text(
-                                '3:45 pm',
-                                style: GoogleFonts.outfit(
-                                    textStyle: const TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.grey)),
-                              ),
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30)),
+                    color: Colors.white),
+                child: ListView.builder(
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ListTile(
+                            horizontalTitleGap: 9,
+                            leading: Image.asset(
+                              'assets/images/women.png',
+                              height: 44,
+                              width: 44,
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 18.0),
-                              child: Divider(height: 0,thickness: 0,),
-                            )
-                          ],
-                        );
-                        
-                      })                
-                  ),
+                            title: Text(
+                              'Marvis Ighedosa',
+                              style: GoogleFonts.outfit(
+                                  textStyle: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black)),
+                            ),
+                            subtitle: Text(
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              'Hai Rizal, I’m on the way to your home i hope you are there',
+                              style: GoogleFonts.outfit(
+                                  textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey)),
+                            ),
+                            trailing: Text(
+                              '3:45 pm',
+                              style: GoogleFonts.outfit(
+                                  textStyle: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey)),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 18.0),
+                            child: Divider(
+                              height: 0,
+                              thickness: 0,
+                            ),
+                          )
+                        ],
+                      );
+                    })),
           )
-
         ],
       ),
-      )
-      ;
+    );
   }
 }
- 
