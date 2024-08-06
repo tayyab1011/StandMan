@@ -3,7 +3,9 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
-const jwt = require('jsonwebtoken')
+const {sendEmail} = require("../controller/email_controller");
+const jwt = require('jsonwebtoken');
+const { resetPassword } = require('../controller/reset_password_controller');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -92,5 +94,9 @@ authRoutes.post('/api/signIn',async(req,res) => {
       res.status(500).json({message: e.message});
  }
 });
+
+authRoutes.post('/api/sendOtp',sendEmail)
+
+authRoutes.post('/api/resetpassword',resetPassword);
 
 module.exports = authRoutes;

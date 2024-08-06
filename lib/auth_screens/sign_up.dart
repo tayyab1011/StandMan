@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUp> {
  bool _isLoading = false;
 //Api call for sign up
  signUp() async {
-  var url = Uri.parse('http://192.168.1.18:3000/api/signup'); // Update to the actual server IP
+  var url = Uri.parse('http://192.168.1.13:3000/api/signup'); // Update to the actual server IP
 
   var request = http.MultipartRequest('POST', url);
   request.fields['user_customer_type'] = "Customer";

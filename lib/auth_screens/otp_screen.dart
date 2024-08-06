@@ -4,20 +4,24 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:standman/auth_screens/new_password.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final String? code;
+  const OtpScreen({super.key, this.code});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  
   TextEditingController otp = TextEditingController();
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -75,8 +79,18 @@ class _OtpScreenState extends State<OtpScreen> {
                 const SizedBox(height: 65),
                 GestureDetector(
                     onTap: () async {
-                      Navigator.of(context).push(MaterialPageRoute(
+                      if(widget.code == otp.text){
+                        print("Your otp is${otp.text}");
+                        print(widget.code);
+                        Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const NewPassword()));
+                      }
+                      else{
+                        
+                        CustomToast.showToast(message: 'Invalid OTP');
+                      }
+
+                      
                     },
                     child: Container(
                       height: 54,

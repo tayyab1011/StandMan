@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/auth_screens/otp_screen.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
+import 'package:standman/models/otp_model.dart';
+import 'package:http/http.dart'as http;
 
 class ForgotScreen extends StatefulWidget {
   const ForgotScreen({super.key});
@@ -13,12 +18,44 @@ class ForgotScreen extends StatefulWidget {
 
 class _ForgotScreenState extends State<ForgotScreen> {
   TextEditingController emailController = TextEditingController();
+  OtpModel otpModel = OtpModel();
+
+  sendOtp() async{
+    var headersList = {
+ 'Accept': '*/*',
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('http://192.168.1.13:3000/api/sendOtp');
+
+
+var body = {
+   "email": emailController.text 
+} ;
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200 ) {
+  otpModel = otpModelFromJson(resBody);
+  print(resBody);
+}
+else {
+  otpModel = otpModelFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
 
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -121,8 +158,21 @@ class _ForgotScreenState extends State<ForgotScreen> {
               ),
               GestureDetector(
                   onTap: () async {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => OtpScreen()));
+                    if(emailController.text.isNotEmpty){
+                      await sendOtp();
+                      if(otpModel.status == 'success'){
+                        Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => OtpScreen(code: otpModel.otp!.otp,)));
+                        CustomToast.showToast(message: 'OTP sent successfully');
+                      }
+                      else{
+                        CustomToast.showToast(message: otpModel.message.toString());
+
+                      }
+                    }
+                    else{
+                      CustomToast.showToast(message: 'Enter your Email');
+                    }
                   },
                   child: Container(
                     height: 54,
