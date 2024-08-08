@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:standman/home_screens/home_screen.dart';
 import 'package:standman/home_screens/main_screen.dart';
 import 'package:standman/main.dart';
 import 'package:standman/on_boarding/on_boarding_one.dart';

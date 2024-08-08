@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:standman/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,15 +41,12 @@ class _SignUpState extends State<SignUp> {
       });
     }
   }
-  Future<String> _convertImageToBase64(File imageFile) async {
-  final bytes = await imageFile.readAsBytes();
-  return base64Encode(bytes);
-}
+ 
 
  bool _isLoading = false;
 //Api call for sign up
  signUp() async {
-  var url = Uri.parse('http://192.168.1.14:3000/api/signup'); // Update to the actual server IP
+  var url = Uri.parse('http://192.168.1.12:3000/api/signup'); // Update to the actual server IP
 
   var request = http.MultipartRequest('POST', url);
   request.fields['user_customer_type'] = "Customer";

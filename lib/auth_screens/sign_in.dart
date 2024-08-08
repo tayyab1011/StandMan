@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
 };
 
 
-var url = Uri.parse('http://192.168.1.14:3000/api/signIn');
+var url = Uri.parse('http://192.168.1.12:3000/api/signIn');
 
 
 var body = {

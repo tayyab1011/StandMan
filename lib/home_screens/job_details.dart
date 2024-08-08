@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/bottom_sheets/job_completed_sheet.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
+import 'package:standman/main.dart';
+import 'package:standman/models/job_create_model.dart';
 
 class JobDetails extends StatefulWidget {
   const JobDetails({super.key});
@@ -18,6 +25,18 @@ class _JobDetailsState extends State<JobDetails> {
   TextEditingController endDateController = TextEditingController();
   TextEditingController specialController = TextEditingController();
   bool _isLoading = false;
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+  JobCreate jobCreate = JobCreate();
+
+  Future<void> selectedImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
   Future<void> selectDate(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
@@ -55,7 +74,6 @@ class _JobDetailsState extends State<JobDetails> {
     }
   }
 
-
   void _handleDateSelection() {
     selectDate(context);
   }
@@ -66,6 +84,41 @@ class _JobDetailsState extends State<JobDetails> {
 
   void _handleEndTimeSelection() {
     endTime(context);
+  }
+
+  jobCreated() async {
+    var headersList = {'Accept': '*/*', 'Content-Type': 'application/json'};
+    var url = Uri.parse('http://192.168.1.12:3000/api/createJob');
+    prefs = await SharedPreferences.getInstance();
+    var id = prefs!.getString('id');
+    print("id meri ha :$id");
+
+    var request = http.MultipartRequest('POST', url);
+    request.fields["users_customers_id"] = id.toString();
+    request.fields["name"] = nameController.text;
+    request.fields["job_date"] = jobDateController.text;
+    request.fields["start_time"] = startDateController.text;
+    request.fields["end_time"] = endDateController.text;
+    request.fields["special_instructions"] = specialController.text;
+
+    if (_image != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath("image", _image!.path));
+    }
+
+    print('Request Fields: ${request.fields}');
+    print('Request Files: ${request.files}');
+
+    var res = await request.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode == 200) {
+      jobCreate = jobCreateFromJson(resBody);
+      print(resBody);
+    } else {
+      jobCreate = jobCreateFromJson(resBody);
+      print(res.reasonPhrase);
+    }
   }
 
   @override
@@ -111,31 +164,43 @@ class _JobDetailsState extends State<JobDetails> {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 17.0, vertical: 17),
-              child: Container(
-                height: 145,
-                width: 330,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    color: Color(0xFFF3F3F3)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset('assets/images/image_selector.svg'),
-                    const SizedBox(
-                      height: 6,
+              child: _image != null
+                  ? Container(
+                      height: 145,
+                      width: 330,
+                      decoration: BoxDecoration(
+                           borderRadius: const BorderRadius.all(Radius.circular(12)),
+                          image: DecorationImage(
+                              fit: BoxFit.cover, image: FileImage(_image!))),
+                    )
+                  : Container(
+                      height: 145,
+                      width: 330,
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          color: Color(0xFFF3F3F3)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                              onTap: selectedImage,
+                              child: SvgPicture.asset(
+                                  'assets/images/image_selector.svg')),
+                          const SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            'Upload Image',
+                            style: GoogleFonts.outfit(
+                                textStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black)),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      'Upload Image',
-                      style: GoogleFonts.outfit(
-                          textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black)),
-                    ),
-                  ],
-                ),
-              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -354,11 +419,23 @@ class _JobDetailsState extends State<JobDetails> {
             ),
             GestureDetector(
                 onTap: () async {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const JobCompletedSheet();
-                      });
+                  if (nameController.text.isNotEmpty &&
+                      jobDateController.text.isNotEmpty &&
+                      endDateController.text.isNotEmpty) {
+                    await jobCreated();
+                    if (jobCreate.status == 'success') {
+                      showModalBottomSheet(
+                          // ignore: use_build_context_synchronously
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const JobCompletedSheet();
+                          });
+                    } else {
+                      CustomToast.showToast(message: 'Job is not created');
+                    }
+                  } else {
+                    CustomToast.showToast(message: 'All fields are required');
+                  }
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 30),
