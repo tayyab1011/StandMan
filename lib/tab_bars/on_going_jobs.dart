@@ -49,32 +49,34 @@ class _OnGoingJobsState extends State<OnGoingJobs> {
             ),
             const SizedBox(height: 30,),
             Center(
-              child: GestureDetector(
-                      onTap: () async {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => const LocationScreen()));
-                      },
-                      child: Container(
-                        height: 48,
-                        width: 290,
-                        decoration: BoxDecoration(
-                            color: GlobalVariables.buttonColor,
-                            borderRadius: BorderRadius.circular(12)),
-                        child: Center(
-                          child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : Text(
-                                  'Create Job',
-                                  style: GoogleFonts.outfit(
-                                      textStyle: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.white)),
-                                ),
-                        ),
-                      )),
+              child: Center(
+                child: GestureDetector(
+                        onTap: () async {
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => const LocationScreen()));
+                        },
+                        child: Container(
+                          height: 48,
+                          width: 290,
+                          decoration: BoxDecoration(
+                              color: GlobalVariables.buttonColor,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Center(
+                            child: _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Text(
+                                    'Create Job',
+                                    style: GoogleFonts.outfit(
+                                        textStyle: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white)),
+                                  ),
+                          ),
+                        )),
+              ),
             ),
             const SizedBox(height: 30,),
             SvgPicture.asset('assets/images/layer.svg')

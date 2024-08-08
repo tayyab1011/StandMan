@@ -8,7 +8,8 @@ import 'package:standman/helper/custom_toast.dart';
 
 class OtpScreen extends StatefulWidget {
   final String? code;
-  const OtpScreen({super.key, this.code});
+  final String? email;
+  const OtpScreen({super.key, this.code, this.email});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -83,7 +84,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         print("Your otp is${otp.text}");
                         print(widget.code);
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const NewPassword()));
+                          builder: (context) =>  NewPassword(email: widget.email,)));
                       }
                       else{
                         

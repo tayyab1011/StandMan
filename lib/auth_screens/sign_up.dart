@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:standman/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+
 import 'package:standman/auth_screens/tab_screens.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:http/http.dart' as http;
@@ -48,7 +50,7 @@ class _SignUpState extends State<SignUp> {
  bool _isLoading = false;
 //Api call for sign up
  signUp() async {
-  var url = Uri.parse('http://192.168.1.13:3000/api/signup'); // Update to the actual server IP
+  var url = Uri.parse('http://192.168.1.14:3000/api/signup'); // Update to the actual server IP
 
   var request = http.MultipartRequest('POST', url);
   request.fields['user_customer_type'] = "Customer";
@@ -74,7 +76,7 @@ class _SignUpState extends State<SignUp> {
 
   if (res.statusCode == 200) {
     signUpModel = signUpModelFromJson(resBody);
-    print('SignUp Model: $signUpModel');
+    
     if (mounted) {
       setState(() {});
     }
@@ -91,8 +93,7 @@ class _SignUpState extends State<SignUp> {
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
-          child: Column(
-            
+          child: Column(  
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -456,6 +457,9 @@ class _SignUpState extends State<SignUp> {
                         CustomToast.showToast(
                             message: "${signUpModel.message}");
                       }
+                    }
+                    else{
+                      CustomToast.showToast(message: 'All fields Required');
                     }
                   },
                   child: Container(

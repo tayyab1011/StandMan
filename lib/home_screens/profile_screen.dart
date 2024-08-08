@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:standman/auth_screens/tab_screens.dart';
 import 'package:standman/bottom_sheets/change_password_sheet.dart';
 import 'package:standman/bottom_sheets/delete_account.dart';
 import 'package:standman/bottom_sheets/notification_settings.dart';
@@ -15,6 +17,23 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+   Future<void> signOut() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  
+  
+  print("Before clearing:");
+  print("Profile: ${prefs.getString('profile')}");
+  print("First Name: ${prefs.getString('first_name')}");
+  print("ID: ${prefs.getString('id')}");
+
+  await prefs.clear(); 
+  
+  print("After clearing:");
+  print("Profile: ${prefs.getString('profile')}");
+  print("First Name: ${prefs.getString('first_name')}");
+  print("ID: ${prefs.getString('id')}");
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -266,24 +285,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                              SvgPicture.asset(
                                 'assets/images/chevron_left.svg'))),
                   
-                  Card(
-                    color: Colors.white,
-                    elevation: 0.2,
-                    child: ListTile(
-                     contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                      horizontalTitleGap: 23,
-                      leading: SvgPicture.asset(
-                        'assets/images/sign_out.svg',
-                        height: 24,
-                        width: 24,
-                      ),
-                      title: Text(
-                        'Sign Out',
-                        style: GoogleFonts.outfit(
-                            textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black)),
+                  GestureDetector(
+                    onTap: (){
+                      signOut();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const TabScreens()));
+                    },
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 0.2,
+                      child: ListTile(
+                       contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                        horizontalTitleGap: 23,
+                        leading: SvgPicture.asset(
+                          'assets/images/sign_out.svg',
+                          height: 24,
+                          width: 24,
+                        ),
+                        title: Text(
+                          'Sign Out',
+                          style: GoogleFonts.outfit(
+                              textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.black)),
+                        ),
                       ),
                     ),
                   )

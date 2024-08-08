@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:standman/drawer_screens/notification.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/home_screens/location.dart';
+import 'package:standman/main.dart';
+
 import 'package:standman/policies/privacy_policy.dart';
 import 'package:standman/policies/terms_and_conditions.dart';
 
@@ -19,12 +24,36 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedIndex = 0;
   bool _isLoading = false;
+  String? profile;
+  String? first_name;
 
    changeSelectedIndex(int index){
     setState(() {
       selectedIndex = index;
     });
   }
+  @override
+  void initState() {
+    
+    super.initState();
+    loadData();
+    
+  }
+   Future<void> loadData() async {
+     prefs = await SharedPreferences.getInstance();
+    setState(() {
+      profile = prefs!.getString('profile');
+      first_name = prefs!.getString('first_name');
+    });
+
+    // Print the values after loading them
+    print('Profile: $profile');
+    print('First Name: $first_name');
+  }
+
+ 
+
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -193,9 +222,10 @@ class _HomeScreenState extends State<HomeScreen> {
             
             ListTile(
               selected: selectedIndex==4,
-              onTap: (){
+              onTap: ()async{
                 changeSelectedIndex(4);
-                print('4th is pressed');
+                
+               
               },
               horizontalTitleGap: 30,
               title: Text(
@@ -215,10 +245,19 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           ListTile(
-            leading: Image.asset(
-              'assets/images/pfp.png',
-              height: 64,
-            ),
+            horizontalTitleGap: 5,
+            leading: profile != null ?Container(
+              height: 80,
+              width: 64,
+              decoration:  BoxDecoration(
+                image: DecorationImage(fit: BoxFit.cover,image: NetworkImage("$baseImageURL${profile.toString()}"),),
+                shape: BoxShape.circle
+              ),
+              
+            ):const Icon(
+                      Icons.person,
+                      size: 50, // Adjust size as needed
+                    ),
             title: Text(
               "Hello...!",
               style: GoogleFonts.outfit(
@@ -228,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.white)),
             ),
             subtitle: Text(
-              "Marvis Ighedosa",
+              first_name.toString(),
               style: GoogleFonts.outfit(
                   textStyle: const TextStyle(
                       fontSize: 18,

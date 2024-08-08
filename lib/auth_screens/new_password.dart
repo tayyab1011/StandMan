@@ -1,10 +1,17 @@
+import 'dart:convert';
+import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:standman/auth_screens/sign_in.dart';
+import 'package:standman/auth_screens/tab_screens.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
+import 'package:standman/models/reset_password.dart';
 
 class NewPassword extends StatefulWidget {
-  const NewPassword({super.key});
+  final String? email;
+  const NewPassword({super.key, this.email});
 
   @override
   State<NewPassword> createState() => _NewPasswordState();
@@ -13,10 +20,50 @@ class NewPassword extends StatefulWidget {
 class _NewPasswordState extends State<NewPassword> {
   TextEditingController confirmController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  ResetPasswordModel resetPasswordModel = ResetPasswordModel();
   bool _obsecureText = true;
   bool _obsecureText2 = true;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  resetPassword() async{
+    var headersList = {
+ 'Accept': '*/*',
+ 
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('http://192.168.1.14:3000/api/resetPassword');
+
+var body = {
+   "email": widget.email,
+   "newPassword":passController.text,
+   "confirmPassword":confirmController.text
+   
+    
+} ;
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200)  {
+  resetPasswordModel = resetPasswordModelFromJson(resBody);
+  if(mounted){
+    setState(() {
+      
+    });
+  }
+  print(resBody);
+}
+else {
+  resetPasswordModel = resetPasswordModelFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,8 +223,20 @@ class _NewPasswordState extends State<NewPassword> {
               ),
               GestureDetector(
                   onTap: () async {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => OtpScreen()));
+                   if(passController.text.isNotEmpty && confirmController.text.isNotEmpty){
+                     await resetPassword();
+                     if(resetPasswordModel.status == "success"){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) =>  const TabScreens()));
+                        CustomToast.showToast(message: 'Passwrod Reset');
+                     }
+                     else{
+                      CustomToast.showToast(message: resetPasswordModel.msg.toString());
+                     }
+                   }
+                   else{
+                     CustomToast.showToast(message: 'All fileds are required');
+                   }
                   },
                   child: Container(
                     height: 54,

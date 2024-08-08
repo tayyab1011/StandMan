@@ -9,59 +9,60 @@ SignInModel signInModelFromJson(String str) => SignInModel.fromJson(json.decode(
 String signInModelToJson(SignInModel data) => json.encode(data.toJson());
 
 class SignInModel {
-    int? code;
     String? status;
-    Data? data;
+    String? token;
+    List<Datum>? data;
     String? message;
 
     SignInModel({
-        this.code,
         this.status,
+        this.token,
         this.data,
         this.message
     });
 
     factory SignInModel.fromJson(Map<String, dynamic> json) => SignInModel(
-        code: json["code"],
         status: json["status"],
         message: json["message"],
-        data: json['data'] !=null? Data.fromJson(json["data"]):null,
+        token: json["token"],
+        data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "code": code,
         "status": status,
-        "message":message,
-        "data": data!.toJson(),
+        "token": token,
+        "message": message,
+        "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
     };
 }
 
-class Data {
-    String userCustomerType;
-    String firstName;
-    String lastName;
-    int phone;
-    String email;
-    String password;
-    String confirmPassword;
-    String profile;
-    String id;
-    int v;
+class Datum {
+    String? id;
+    String? userCustomerType;
+    String? firstName;
+    String? lastName;
+    int? phone;
+    String? email;
+    String? password;
+    String? confirmPassword;
+    String? profile;
+    int? v;
 
-    Data({
-        required this.userCustomerType,
-        required this.firstName,
-        required this.lastName,
-        required this.phone,
-        required this.email,
-        required this.password,
-        required this.confirmPassword,
-        required this.profile,
-        required this.id,
-        required this.v,
+    Datum({
+        this.id,
+        this.userCustomerType,
+        this.firstName,
+        this.lastName,
+        this.phone,
+        this.email,
+        this.password,
+        this.confirmPassword,
+        this.profile,
+        this.v,
     });
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
+    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+        id: json["_id"],
         userCustomerType: json["user_customer_type"],
         firstName: json["first_name"],
         lastName: json["last_name"],
@@ -70,11 +71,11 @@ class Data {
         password: json["password"],
         confirmPassword: json["confirm_password"],
         profile: json["profile"],
-        id: json["_id"],
         v: json["__v"],
     );
 
     Map<String, dynamic> toJson() => {
+        "_id": id,
         "user_customer_type": userCustomerType,
         "first_name": firstName,
         "last_name": lastName,
@@ -83,7 +84,6 @@ class Data {
         "password": password,
         "confirm_password": confirmPassword,
         "profile": profile,
-        "_id": id,
         "__v": v,
     };
 }

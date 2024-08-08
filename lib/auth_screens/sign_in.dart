@@ -1,14 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/auth_screens/forgot_screen.dart';
 import 'package:standman/auth_screens/sign_tab.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/home_screens/main_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:standman/main.dart';
 import 'package:standman/models/sign_in_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
 };
 
 
-var url = Uri.parse('http://192.168.1.18:3000/api/signIn');
+var url = Uri.parse('http://192.168.1.14:3000/api/signIn');
 
 
 var body = {
@@ -48,11 +49,22 @@ req.headers.addAll(headersList);
 req.body = json.encode(body);
 
 
+
 var res = await req.send();
 final resBody = await res.stream.bytesToString();
 
 if (res.statusCode == 200) {
   signInModel = signInModelFromJson(resBody);
+  print(signInModel.data![0].firstName.toString());
+  if(signInModel.data != null){
+ prefs = await  SharedPreferences.getInstance();
+   await prefs!.setString('profile', signInModel.data![0].profile.toString());
+    await prefs!.setString("first_name", signInModel.data![0].firstName.toString());
+    await prefs!.setString("id",  signInModel.data![0].id.toString());
+   var profile = prefs!.getString('profile');
+    // ignore: unnecessary_brace_in_string_interps
+    print("First name:${profile}");
+    }
   if(mounted){
     setState(() {
       

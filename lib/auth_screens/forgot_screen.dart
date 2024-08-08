@@ -25,7 +25,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
  'Accept': '*/*',
  'Content-Type': 'application/json' 
 };
-var url = Uri.parse('http://192.168.1.13:3000/api/sendOtp');
+  var url = Uri.parse('http://192.168.1.14:3000/api/sendOtp');
 
 
 var body = {
@@ -42,6 +42,11 @@ final resBody = await res.stream.bytesToString();
 
 if (res.statusCode == 200 ) {
   otpModel = otpModelFromJson(resBody);
+   if(mounted){
+    setState(() {
+      
+    });
+  }
   print(resBody);
 }
 else {
@@ -162,7 +167,7 @@ else {
                       await sendOtp();
                       if(otpModel.status == 'success'){
                         Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => OtpScreen(code: otpModel.otp!.otp,)));
+                        MaterialPageRoute(builder: (context) => OtpScreen(code: otpModel.otp!.otp,email: otpModel.otp!.email,)));
                         CustomToast.showToast(message: 'OTP sent successfully');
                       }
                       else{

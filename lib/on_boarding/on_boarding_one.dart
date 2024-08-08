@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:standman/auth_screens/sign_in.dart';
+
+import 'package:standman/auth_screens/tab_screens.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -35,28 +36,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            itemCount: titles.length,
-            onPageChanged: (index) {
-              setState(() {
-                currentIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              itemCount: titles.length,
+              onPageChanged: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: currentIndex ==2?MainAxisAlignment.center:MainAxisAlignment.start,
                   children: [
                     SvgPicture.asset(
                       images[index],
-                      height: 300,
-                      width: 300,
+                      
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 9),
                     Text(
                       titles[index],
                       style: GoogleFonts.outfit(
@@ -66,7 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         color: Colors.black,
                       )),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Text(
                       descriptions[index],
                       textAlign: TextAlign.center,
@@ -75,83 +75,83 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               TextStyle(fontSize: 16, color: Colors.grey[700])),
                     ),
                   ],
-                ),
-              );
-            },
-          ),
-          Positioned(
-            bottom: 30,
-            left: 16,
-            right: 16,
-            child: Column(
-              children: [
-                SmoothPageIndicator(
-                  controller: _pageController,
-                  count: titles.length,
-                  effect: const ExpandingDotsEffect(
-                    dotHeight: 10,
-                    dotWidth: 10,
-                    activeDotColor: Colors.blue,
-                  ),
-                ),
-                const SizedBox(height: 23),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _pageController.previousPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(60, 60),
-                        backgroundColor: currentIndex == 0
-                            ? Colors.grey
-                            : const Color(0xFF2B65EC),
-                        foregroundColor: Colors.white,
-                        shape: CircleBorder(),
-                      ),
-                      child: const Icon(Icons.arrow_back),
+                );
+              },
+            ),
+            Positioned(
+              bottom: 30,
+              left: 16,
+              right: 16,
+              child: Column(
+                children: [
+                  SmoothPageIndicator(
+                    controller: _pageController,
+                    count: titles.length,
+                    effect: const ExpandingDotsEffect(
+                      dotHeight: 10,
+                      dotWidth: 10,
+                      activeDotColor: Colors.blue,
                     ),
-                    Center(
-                      child: TextButton(
+                  ),
+                  const SizedBox(height: 23),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
                         onPressed: () {
-                          // Handle the Skip button press
-                          _pageController.jumpToPage(titles.length - 1);
+                          _pageController.previousPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
                         },
-                        child: Text(
-                          'Skip',
-                          style: GoogleFonts.outfit(
-                              textStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 19)),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(60, 60),
+                          backgroundColor: currentIndex == 0
+                              ? Colors.grey
+                              : const Color(0xFF2B65EC),
+                          foregroundColor: Colors.white,
+                          shape: CircleBorder(),
+                        ),
+                        child: const Icon(Icons.arrow_back),
+                      ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            // Handle the Skip button press
+                            _pageController.jumpToPage(titles.length - 1);
+                          },
+                          child: Text(
+                            'Skip',
+                            style: GoogleFonts.outfit(
+                                textStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 19)),
+                          ),
                         ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        currentIndex == 2
-                            ? Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const LoginScreen()))
-                            : _pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                      },
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: Size(60, 60),
-                          shape: const CircleBorder(),
-                          backgroundColor: const Color(0xFF2B65EC),
-                          foregroundColor: Colors.white),
-                      child: const Icon(Icons.arrow_forward),
-                    )
-                  ],
-                ),
-              ],
+                      ElevatedButton(
+                        onPressed: () {
+                          currentIndex == 2
+                              ? Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>  TabScreens()))
+                              : _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                        },
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size(60, 60),
+                            shape: const CircleBorder(),
+                            backgroundColor: const Color(0xFF2B65EC),
+                            foregroundColor: Colors.white),
+                        child: const Icon(Icons.arrow_forward),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

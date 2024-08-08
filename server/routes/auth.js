@@ -88,7 +88,7 @@ authRoutes.post('/api/signIn',async(req,res) => {
       return res.status(400).json({message: 'Incorrect password'})   ; 
   }
   const token = jwt.sign({id: user._id},'secret123');
-  res.json({ status: 'success', token, ...user._doc });
+  res.json({ status: 'success', token, data:[user]});
   }
   catch(e){
       res.status(500).json({message: e.message});
