@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/auth_screens/tab_screens.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/models/reset_password.dart';
@@ -31,7 +32,7 @@ class _NewPasswordState extends State<NewPassword> {
  
  'Content-Type': 'application/json' 
 };
-var url = Uri.parse('http://192.168.1.12:3000/api/resetPassword');
+var url = Uri.parse('${baseImageURL}api/resetPassword');
 
 var body = {
    "email": widget.email,

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/bottom_sheets/job_completed_sheet.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/main.dart';
@@ -28,6 +29,8 @@ class _JobDetailsState extends State<JobDetails> {
   File? _image;
   final ImagePicker _picker = ImagePicker();
   JobCreate jobCreate = JobCreate();
+
+  
 
   Future<void> selectedImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -61,6 +64,7 @@ class _JobDetailsState extends State<JobDetails> {
       });
     }
   }
+  
 
   Future<void> endTime(BuildContext context) async {
     TimeOfDay? selectedEndTime =
@@ -87,8 +91,8 @@ class _JobDetailsState extends State<JobDetails> {
   }
 
   jobCreated() async {
-    var headersList = {'Accept': '*/*', 'Content-Type': 'application/json'};
-    var url = Uri.parse('http://192.168.1.12:3000/api/createJob');
+   
+    var url = Uri.parse('${baseImageURL}api/createJob');
     prefs = await SharedPreferences.getInstance();
     var id = prefs!.getString('id');
     print("id meri ha :$id");
@@ -114,12 +118,24 @@ class _JobDetailsState extends State<JobDetails> {
 
     if (res.statusCode == 200) {
       jobCreate = jobCreateFromJson(resBody);
+      print('job ka data${jobCreate.data![0]}');
+      if(jobCreate.data != null){
+        prefs = await SharedPreferences.getInstance();
+      prefs!.setString('job_date', jobCreate.data![0].jobDate.toString());
+      prefs!.setString('name', jobCreate.data![0].name.toString());
+      prefs!.setString('image', jobCreate.data![0].image.toString());
+      }
+      var job_date = prefs!.getString('job_date');
+    // ignore: unnecessary_brace_in_string_interps
+    print("Job ki date ha:${job_date}");
+      
       print(resBody);
     } else {
       jobCreate = jobCreateFromJson(resBody);
       print(res.reasonPhrase);
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {

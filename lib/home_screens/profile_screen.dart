@@ -6,8 +6,10 @@ import 'package:standman/auth_screens/tab_screens.dart';
 import 'package:standman/bottom_sheets/change_password_sheet.dart';
 import 'package:standman/bottom_sheets/delete_account.dart';
 import 'package:standman/bottom_sheets/notification_settings.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/home_screens/edit_profile.dart';
+import 'package:standman/main.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,7 +20,24 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
-   Future<void> signOut() async {
+   String? name;
+    String? email;
+     String? phone;
+  
+  String? profile;
+
+  Future<void> loadData() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      profile = prefs!.getString('profile');
+      phone = prefs!.getString('phone');
+      email = prefs!.getString('email');
+      name = prefs!.getString('first_name');
+    });
+  }
+  
+
+  Future<void> signOut() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   
   
@@ -26,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   print("Profile: ${prefs.getString('profile')}");
   print("First Name: ${prefs.getString('first_name')}");
   print("ID: ${prefs.getString('id')}");
+  print("Phone no: ${prefs.getString('phone')}");
 
   await prefs.clear(); 
   
@@ -33,7 +53,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   print("Profile: ${prefs.getString('profile')}");
   print("First Name: ${prefs.getString('first_name')}");
   print("ID: ${prefs.getString('id')}");
+  print("Phone no: ${prefs.getString('phone')}");
 }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,11 +127,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/women.png',
-                      height: 99,
-                      width: 99,
-                    ),
+                    profile != null
+                ? Container(
+                    height: 99,
+                    width: 99,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              "$baseImageURL${profile.toString()}"),
+                        ),
+                        shape: BoxShape.circle),
+                  )
+                : const Icon(
+                    Icons.person,
+                    size: 50, // Adjust size as needed
+                  ),
                     const SizedBox(
                       width: 13,
                     ),
@@ -113,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Marvis Ighedosa',
+                          name.toString(),
                           style: GoogleFonts.outfit(
                               textStyle: const TextStyle(
                                   fontSize: 18,
@@ -135,7 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               width: 4,
                             ),
                             Text(
-                              "Dosamarvis@gmail.com",
+                             email.toString(),
                               style: GoogleFonts.outfit(
                                   textStyle: const TextStyle(
                                       fontSize: 14,
@@ -158,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               width: 2,
                             ),
                             Text(
-                              "+9212355697",
+                             phone.toString(),
                               style: GoogleFonts.outfit(
                                   textStyle: const TextStyle(
                                       fontSize: 14,

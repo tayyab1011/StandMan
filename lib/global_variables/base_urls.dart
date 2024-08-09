@@ -1,1 +1,1 @@
-const baseImageURL = 'http://192.168.1.14:3000/';
+const baseImageURL = 'http://192.168.1.10:3000/';

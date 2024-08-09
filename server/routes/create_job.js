@@ -23,7 +23,7 @@ jobRoutes.post('/api/createJob', uploads.single('image'), async (req, res) => {
     //   return res.status(400).json({ error: 'File not uploaded' });
     // }
 
-   const pic = req.file.path;
+    const pic = req.file.path;
     const { users_customers_id, name, job_date, start_time, end_time, special_instructions } = req.body;
 
     let job = new Job({
@@ -40,12 +40,29 @@ jobRoutes.post('/api/createJob', uploads.single('image'), async (req, res) => {
     res.status(200).json({
       code: 200,
       status: "success",
-      data: job
+      data: [job]
     });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+jobRoutes.post('/api/getJobs', async (req, res) => {
+  try {
+    const { users_customers_id } = req.body;
+    const jobs = await Job.find({ users_customers_id });
+    if (!jobs) {
+      return res.status(404).json({ msg: 'No jobs found' });
+    }
+    res.status(200).json({
+      code: 200,
+      status: "success",
+      data: jobs
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+})
 
 module.exports = jobRoutes;

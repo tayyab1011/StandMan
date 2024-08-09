@@ -12,7 +12,6 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

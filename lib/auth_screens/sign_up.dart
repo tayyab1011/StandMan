@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-
 import 'package:standman/auth_screens/tab_screens.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:http/http.dart' as http;
 import 'package:standman/helper/custom_toast.dart';
@@ -22,11 +21,11 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   TextEditingController emailController = TextEditingController();
-  TextEditingController confrim =         TextEditingController();
+  TextEditingController confrim = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
-  TextEditingController passController  = TextEditingController();
+  TextEditingController passController = TextEditingController();
   bool _obsecureText = true;
   bool _obsecureText2 = true;
   File? _image;
@@ -41,46 +40,47 @@ class _SignUpState extends State<SignUp> {
       });
     }
   }
- 
 
- bool _isLoading = false;
-//Api call for sign up
- signUp() async {
-  var url = Uri.parse('http://192.168.1.12:3000/api/signup'); // Update to the actual server IP
+  bool _isLoading = false;
+  //Api call for sign up
+  signUp() async {
+    var url = Uri.parse(
+        '${baseImageURL}api/signup');
 
-  var request = http.MultipartRequest('POST', url);
-  request.fields['user_customer_type'] = "Customer";
-  request.fields['first_name'] = fNameController.text;
-  request.fields['last_name'] = lNameController.text;
-  request.fields['phone'] = phoneController.text;
-  request.fields['email'] = emailController.text;
-  request.fields['password'] = passController.text;
-  request.fields['confirm_password'] = confrim.text;
+    var request = http.MultipartRequest('POST', url);
+    request.fields['user_customer_type'] = "Customer";
+    request.fields['first_name'] = fNameController.text;
+    request.fields['last_name'] = lNameController.text;
+    request.fields['phone'] = phoneController.text;
+    request.fields['email'] = emailController.text;
+    request.fields['password'] = passController.text;
+    request.fields['confirm_password'] = confrim.text;
 
-  if (_image != null) {
-    request.files.add(await http.MultipartFile.fromPath('profile', _image!.path));
-  }
-
-  print('Request Fields: ${request.fields}');
-  print('Request Files: ${request.files}');
-
-  var res = await request.send();
-  final resBody = await res.stream.bytesToString();
-
-  print('Response Status Code: ${res.statusCode}');
-  print('Response Body: $resBody');
-
-  if (res.statusCode == 200) {
-    signUpModel = signUpModelFromJson(resBody);
-    
-    if (mounted) {
-      setState(() {});
+    if (_image != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('profile', _image!.path));
     }
-  } else {
-    print('Error Reason: ${res.reasonPhrase}');
-  }
-}
 
+    print('Request Fields: ${request.fields}');
+    print('Request Files: ${request.files}');
+
+    var res = await request.send();
+    final resBody = await res.stream.bytesToString();
+
+    print('Response Status Code: ${res.statusCode}');
+    print('Response Body: $resBody');
+
+    if (res.statusCode == 200) {
+      signUpModel = signUpModelFromJson(resBody);
+      
+
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      print('Error Reason: ${res.reasonPhrase}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class _SignUpState extends State<SignUp> {
       body: SafeArea(
           child: Center(
         child: SingleChildScrollView(
-          child: Column(  
+          child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -453,8 +453,7 @@ class _SignUpState extends State<SignUp> {
                         CustomToast.showToast(
                             message: "${signUpModel.message}");
                       }
-                    }
-                    else{
+                    } else {
                       CustomToast.showToast(message: 'All fields Required');
                     }
                   },

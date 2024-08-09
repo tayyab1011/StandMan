@@ -3,13 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:standman/drawer_screens/notification.dart';
 import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/home_screens/location.dart';
 import 'package:standman/main.dart';
-
 import 'package:standman/policies/privacy_policy.dart';
 import 'package:standman/policies/terms_and_conditions.dart';
 
@@ -26,33 +24,33 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
   String? profile;
   String? first_name;
+  String? email;
 
-   changeSelectedIndex(int index){
+  changeSelectedIndex(int index) {
     setState(() {
       selectedIndex = index;
     });
   }
+
   @override
   void initState() {
-    
     super.initState();
     loadData();
-    
   }
-   Future<void> loadData() async {
-     prefs = await SharedPreferences.getInstance();
+
+  Future<void> loadData() async {
+    prefs = await SharedPreferences.getInstance();
     setState(() {
       profile = prefs!.getString('profile');
       first_name = prefs!.getString('first_name');
+      email = prefs!.getString('email');
     });
 
     // Print the values after loading them
     print('Profile: $profile');
     print('First Name: $first_name');
+    print('Email:$email');
   }
-
- 
-
 
   @override
   Widget build(BuildContext context) {
@@ -112,13 +110,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.only(bottom: 0.0),
                 child: Column(
                   children: [
-                    Image.asset(
-                      'assets/images/women.png',
-                      height: 90,
-                      width: 103,
-                    ),
+                    profile != null
+                ? Container(
+                    height: 90,
+                    width: 103,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              "$baseImageURL${profile.toString()}"),
+                        ),
+                        shape: BoxShape.circle),
+                  )
+                : const Icon(
+                    Icons.person,
+                    size: 50, // Adjust size as needed
+                  ),
                     Text(
-                      "Marvis Ighedosa",
+                      first_name.toString(),
                       style: GoogleFonts.outfit(
                           textStyle: const TextStyle(
                               fontSize: 18,
@@ -136,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 2,
                         ),
                         Text(
-                          "Dosamarvis@gmail.com",
+                          email.toString(),
                           style: GoogleFonts.outfit(
                               textStyle: const TextStyle(
                                   fontSize: 11,
@@ -148,8 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 )),
             ListTile(
-              selected: selectedIndex==0,
-              onTap:(){
+              selected: selectedIndex == 0,
+              onTap: () {
                 changeSelectedIndex(0);
                 print('o is pressed');
               },
@@ -165,10 +174,11 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: SvgPicture.asset('assets/images/home2.svg'),
             ),
             ListTile(
-              selected: selectedIndex==1,
-              onTap: (){
+              selected: selectedIndex == 1,
+              onTap: () {
                 changeSelectedIndex(1);
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const NotificationScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NotificationScreen()));
               },
               horizontalTitleGap: 30,
               title: Text(
@@ -187,9 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               selected: selectedIndex == 2,
-              onTap: (){
+              onTap: () {
                 changeSelectedIndex(2);
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const PrivacyPolicy()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicy()));
               },
               horizontalTitleGap: 30,
               title: Text(
@@ -203,10 +214,11 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: SvgPicture.asset('assets/images/privacy.svg'),
             ),
             ListTile(
-              selected: selectedIndex==3,
-              onTap: (){
+              selected: selectedIndex == 3,
+              onTap: () {
                 changeSelectedIndex(3);
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const TermsAndConditions()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const TermsAndConditions()));
               },
               horizontalTitleGap: 30,
               title: Text(
@@ -219,13 +231,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               leading: SvgPicture.asset('assets/images/privacy.svg'),
             ),
-            
             ListTile(
-              selected: selectedIndex==4,
-              onTap: ()async{
+              selected: selectedIndex == 4,
+              onTap: () async {
                 changeSelectedIndex(4);
-                
-               
               },
               horizontalTitleGap: 30,
               title: Text(
@@ -238,7 +247,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               leading: SvgPicture.asset('assets/images/sign_out.svg'),
             ),
-
           ],
         ),
       ),
@@ -246,18 +254,22 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           ListTile(
             horizontalTitleGap: 5,
-            leading: profile != null ?Container(
-              height: 80,
-              width: 64,
-              decoration:  BoxDecoration(
-                image: DecorationImage(fit: BoxFit.cover,image: NetworkImage("$baseImageURL${profile.toString()}"),),
-                shape: BoxShape.circle
-              ),
-              
-            ):const Icon(
-                      Icons.person,
-                      size: 50, // Adjust size as needed
-                    ),
+            leading: profile != null
+                ? Container(
+                    height: 80,
+                    width: 64,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              "$baseImageURL${profile.toString()}"),
+                        ),
+                        shape: BoxShape.circle),
+                  )
+                : const Icon(
+                    Icons.person,
+                    size: 50, // Adjust size as needed
+                  ),
             title: Text(
               "Hello...!",
               style: GoogleFonts.outfit(
@@ -348,7 +360,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                
                 Expanded(
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,

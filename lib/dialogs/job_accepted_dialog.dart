@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/home_screens/main_screen.dart';
 
 class JobAcceptedDialog extends StatefulWidget {
   const JobAcceptedDialog({super.key});
@@ -90,26 +91,31 @@ class _JobAcceptedDialogState extends State<JobAcceptedDialog> {
               const SizedBox(
                 height: 30,
               ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                height: 48,
-                width: 307,
-                decoration: BoxDecoration(
-                    color: GlobalVariables.buttonColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Center(
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : Text(
-                          'Go back to home',
-                          style: GoogleFonts.outfit(
-                              textStyle: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white)),
-                        ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MainScreen()));
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  height: 48,
+                  width: 307,
+                  decoration: BoxDecoration(
+                      color: GlobalVariables.buttonColor,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Center(
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            'Go back to home',
+                            style: GoogleFonts.outfit(
+                                textStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white)),
+                          ),
+                  ),
                 ),
               )
             ],

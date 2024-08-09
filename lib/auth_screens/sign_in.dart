@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/auth_screens/forgot_screen.dart';
 import 'package:standman/auth_screens/sign_tab.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
 import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/home_screens/main_screen.dart';
@@ -35,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 };
 
 
-var url = Uri.parse('http://192.168.1.12:3000/api/signIn');
+var url = Uri.parse('${baseImageURL}api/signIn');
 
 
 var body = {
@@ -61,6 +62,8 @@ if (res.statusCode == 200) {
    await prefs!.setString('profile', signInModel.data![0].profile.toString());
     await prefs!.setString("first_name", signInModel.data![0].firstName.toString());
     await prefs!.setString("id",  signInModel.data![0].id.toString());
+    await prefs!.setString("email",  signInModel.data![0].email.toString());
+    await prefs!.setString("phone",  signInModel.data![0].phone.toString());
    var profile = prefs!.getString('profile');
     // ignore: unnecessary_brace_in_string_interps
     print("First name:${profile}");
