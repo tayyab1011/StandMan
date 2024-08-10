@@ -21,12 +21,13 @@ class _PreviousJobsState extends State<PreviousJobs> {
           children: [
             Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AllJobDetails()));
-                  },
-                  child: ListView.builder(
-                                itemCount: 4,
-                                itemBuilder: (context, index) {
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AllJobDetails()));
+              },
+              child: ListView.builder(
+                itemCount: 4,
+                itemBuilder: (context, index) {
                   return Card(
                     elevation: 1,
                     color: Colors.white,
@@ -105,7 +106,8 @@ class _PreviousJobsState extends State<PreviousJobs> {
                                               style: GoogleFonts.outfit(
                                                   textStyle: const TextStyle(
                                                       fontSize: 8,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: Colors.black)),
                                             ),
                                             const SizedBox(
@@ -117,17 +119,20 @@ class _PreviousJobsState extends State<PreviousJobs> {
                                               decoration: BoxDecoration(
                                                   color: Color(0xFFE9FFE7),
                                                   borderRadius:
-                                                      BorderRadius.circular(30)),
+                                                      BorderRadius.circular(
+                                                          30)),
                                               child: Center(
                                                 child: Text(
                                                   'Completed',
                                                   style: GoogleFonts.outfit(
-                                                      textStyle: const TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color:
-                                                              Colors.lightGreen)),
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Colors
+                                                                  .lightGreen)),
                                                 ),
                                               ),
                                             )
@@ -145,7 +150,8 @@ class _PreviousJobsState extends State<PreviousJobs> {
                                               style: GoogleFonts.outfit(
                                                   textStyle: const TextStyle(
                                                       fontSize: 8,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       color: Colors.grey)),
                                             ),
                                           ],
@@ -161,9 +167,9 @@ class _PreviousJobsState extends State<PreviousJobs> {
                       ),
                     ),
                   );
-                                },
-                              ),
-                ))
+                },
+              ),
+            ))
           ],
         ),
       ),
