@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:google_fonts/google_fonts.dart';
-import 'package:standman/global_variables/global_variables.dart';
+
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
