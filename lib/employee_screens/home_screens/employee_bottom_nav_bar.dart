@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/employee_screens/home_screens/employee_chat_screen.dart';
 import 'package:standman/employee_screens/home_screens/employee_home.dart';
+import 'package:standman/employee_screens/home_screens/employee_job_screen.dart';
 import 'package:standman/employee_screens/home_screens/employee_wallet_screen.dart';
 
 
@@ -32,7 +33,7 @@ class _EmployeeNavBarState extends State<EmployeeNavBar> {
       const EmployeeHome(),
       const EmployeeChatScreen(),
       const EmployeeWalletScreen(),
-      Container(),
+      const EmployeeJobScreen(),
       Container(),
     ];
   }
