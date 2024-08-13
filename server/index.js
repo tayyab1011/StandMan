@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require("./routes/auth");
 const jobRoutes = require('./routes/create_job');
+const employeeRoutes = require("./routes/employee_auth");
 const mongoose = require('mongoose');
 const path = require('path')
 const cors = require('cors')
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(authRoutes);
 app.use(jobRoutes);
+app.use(employeeRoutes);
 app.use(cors());
 
 mongoose.connect(DB).then(()=>{

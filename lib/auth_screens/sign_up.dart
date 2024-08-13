@@ -44,8 +44,7 @@ class _SignUpState extends State<SignUp> {
   bool _isLoading = false;
   //Api call for sign up
   signUp() async {
-    var url = Uri.parse(
-        '${baseImageURL}api/signup');
+    var url = Uri.parse('${baseImageURL}api/signup');
 
     var request = http.MultipartRequest('POST', url);
     request.fields['user_customer_type'] = "Customer";
@@ -72,7 +71,6 @@ class _SignUpState extends State<SignUp> {
 
     if (res.statusCode == 200) {
       signUpModel = signUpModelFromJson(resBody);
-      
 
       if (mounted) {
         setState(() {});
@@ -457,25 +455,30 @@ class _SignUpState extends State<SignUp> {
                       CustomToast.showToast(message: 'All fields Required');
                     }
                   },
-                  child: Container(
-                    height: 54,
-                    width: 286,
-                    decoration: BoxDecoration(
-                        color: GlobalVariables.buttonColor,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Center(
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : Text(
-                              'SignUp',
-                              style: GoogleFonts.outfit(
-                                  textStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white)),
-                            ),
+                  child: GestureDetector(
+                    onTap: (){
+                      // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>));
+                    },
+                    child: Container(
+                      height: 54,
+                      width: 286,
+                      decoration: BoxDecoration(
+                          color: GlobalVariables.buttonColor,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Center(
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Text(
+                                'Next',
+                                style: GoogleFonts.outfit(
+                                    textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white)),
+                              ),
+                      ),
                     ),
                   )),
               const SizedBox(

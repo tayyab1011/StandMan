@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:standman/employee_screens/home_screens/employee_chat_screen.dart';
 import 'package:standman/employee_screens/home_screens/employee_home.dart';
 import 'package:standman/employee_screens/home_screens/employee_job_screen.dart';
+import 'package:standman/employee_screens/home_screens/employee_profile.dart';
 import 'package:standman/employee_screens/home_screens/employee_wallet_screen.dart';
 
 
@@ -34,7 +35,7 @@ class _EmployeeNavBarState extends State<EmployeeNavBar> {
       const EmployeeChatScreen(),
       const EmployeeWalletScreen(),
       const EmployeeJobScreen(),
-      Container(),
+      const EmployeeProfile()
     ];
   }
   @override
