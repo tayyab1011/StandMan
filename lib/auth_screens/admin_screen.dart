@@ -1,7 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart'as http;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:standman/employee_screens/employee_models/employee_signin_model.dart';
+import 'package:standman/employee_screens/home_screens/employee_main_screen.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
+import 'package:standman/main.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -16,6 +24,46 @@ class _AdminScreenState extends State<AdminScreen> {
   bool _obsecureText = true;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  EmployeeSignIn employeeSignInModel = EmployeeSignIn();
+
+
+  employeeSignIn() async{
+    var headersList = {
+ 'Accept': '*/*',
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('${baseImageURL}api/employee_signin');
+
+var body = {
+  "email":emailController.text,
+  "password":passController.text
+};
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200) {
+  
+  employeeSignInModel = employeeSignInFromJson(resBody);
+   prefs = await SharedPreferences.getInstance();
+  prefs!.setString('employee_id', employeeSignInModel.data![0].id.toString());
+  if(mounted){
+    setState(() {
+      
+    });
+  }
+  print(resBody);
+}
+else {
+  employeeSignInModel = employeeSignInFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +200,21 @@ class _AdminScreenState extends State<AdminScreen> {
                 height: 2,
               ),
               GestureDetector(
-                  onTap: () async {},
+                  onTap: () async {
+                    if(emailController.text.isNotEmpty && passController.text.isNotEmpty){
+                      await employeeSignIn();
+                      if(employeeSignInModel.status == 'success'){
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const EmployeeMainScreen()));
+                        CustomToast.showToast(message: 'Log In Successful');
+                      }
+                      else{
+                        CustomToast.showToast(message: 'Log In Failed');
+                      }
+                    }
+                    else{
+                      CustomToast.showToast(message: 'All fields Required');
+                    }
+                  },
                   child: Container(
                     height: 54,
                     width: 286,

@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:standman/auth_screens/tab_screens.dart';
+import 'package:standman/auth_screens/upload_document.dart';
 import 'package:standman/global_variables/global_variables.dart';
 
 class AdminSignUp extends StatefulWidget {
@@ -15,13 +19,25 @@ class AdminSignUp extends StatefulWidget {
 class _AdminSignUpState extends State<AdminSignUp> {
   TextEditingController emailController = TextEditingController();
   TextEditingController confrim = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
   TextEditingController passController = TextEditingController();
   bool _obsecureText = true;
   bool _obsecureText2 = true;
-
+  ImagePicker _imagePicker = ImagePicker();
+  File? _file;
   bool _isLoading = false;
+
+  Future<void> pickedProfile() async {
+    final pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _file = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +63,22 @@ class _AdminSignUpState extends State<AdminSignUp> {
                         width: 110,
                         child: Stack(
                           children: [
-                            SvgPicture.asset('assets/images/ellipse.svg'),
+                           _file !=null? Container(
+                                    width: 110,
+                                    height: 125,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: FileImage(_file!))),
+                                  ): SvgPicture.asset('assets/images/ellipse.svg'),
                             Positioned(
                               top: -4,
                               left: -9,
                               child:
-                                  SvgPicture.asset('assets/images/camera.svg'),
+                                  GestureDetector(
+                                    onTap: pickedProfile,
+                                    child: SvgPicture.asset('assets/images/camera.svg')),
                             )
                           ],
                         ),
@@ -79,6 +105,7 @@ class _AdminSignUpState extends State<AdminSignUp> {
                               fontWeight: FontWeight.w300)),
                     ),
                     IntlPhoneField(
+                      controller: phoneController,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
                           hintText: 'Phone Number',
@@ -355,7 +382,18 @@ class _AdminSignUpState extends State<AdminSignUp> {
                 height: 30,
               ),
               GestureDetector(
-                  onTap: () async {},
+                  onTap: () async {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => UploadDocument(
+                              email: emailController.text,
+                              file: _file,
+                              password: passController.text,
+                              confrim_password: confrim.text,
+                              first_name: fNameController.text,
+                              last_name: lNameController.text,
+                              phone: phoneController.text,
+                            )));
+                  },
                   child: Container(
                     height: 54,
                     width: 286,
@@ -368,7 +406,7 @@ class _AdminSignUpState extends State<AdminSignUp> {
                               color: Colors.white,
                             )
                           : Text(
-                              'LOGIN',
+                              'NEXT',
                               style: GoogleFonts.outfit(
                                   textStyle: const TextStyle(
                                       fontSize: 14,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:standman/employee_screens/home_screens/employee_main_screen.dart';
 import 'package:standman/home_screens/main_screen.dart';
 import 'package:standman/main.dart';
 import 'package:standman/on_boarding/on_boarding_one.dart';
@@ -31,11 +32,16 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> whereToGo() async{
  prefs = await SharedPreferences.getInstance();
     var id = prefs!.getString('id');
+    var employeeId = prefs!.getString('employee_id');
     print(id);
     Timer(const Duration(milliseconds: 2000), () {
      if(id!=null){
        Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const MainScreen()));
+     }
+     else if(employeeId!=null){
+             Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const EmployeeMainScreen()));
      }
      else{
        Navigator.of(context).pushReplacement(

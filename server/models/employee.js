@@ -10,7 +10,7 @@ const employeeSchema = mongoose.Schema({
     users_customers_type : {
         type: String,
         enum:Object.values(UserCustomerType),
-        required: true,
+        required:true,
         trim: true,
     },
 

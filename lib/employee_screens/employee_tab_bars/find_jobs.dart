@@ -1,11 +1,17 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/employee_screens/home_screens/employee_job_details.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
-
+import 'package:standman/main.dart';
+import 'package:standman/models/get_jobs_model.dart';
 
 class FindJobs extends StatefulWidget {
   const FindJobs({super.key});
@@ -15,15 +21,55 @@ class FindJobs extends StatefulWidget {
 }
 
 class _FindJobsState extends State<FindJobs> {
-   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedIndex = 0;
-
+  GetJobsModel getJobsModel = GetJobsModel();
   bool _isLoading = false;
-   changeSelectedIndex(int index) {
+
+  getJobs() async {
+    var headersList = {
+      'Accept': '*/*',
+      'Content-Type': 'application/json'
+    };
+    var url = Uri.parse('${baseImageURL}api/getJobs');
+    prefs = await SharedPreferences.getInstance();
+    var id = prefs!.getString('id');
+    
+
+    var body = {"users_customers_id": id};
+
+    var req = http.Request('POST', url);
+    req.headers.addAll(headersList);
+    req.body = json.encode(body);
+
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
+
+    if (res.statusCode == 200) {
+      getJobsModel = getJobsModelFromJson(resBody);
+
+      print(resBody);
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      print(res.reasonPhrase);
+    }
+  }
+
+  changeSelectedIndex(int index) {
     setState(() {
       selectedIndex = index;
     });
   }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getJobs();
+    print('Hullalallalallallalala');
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -31,14 +77,8 @@ class _FindJobsState extends State<FindJobs> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      
-      
-      
-      
-    
-      body: Column(
+      body:getJobsModel.data != null? Column(
         children: [
-          
           Expanded(
               child: Container(
             width: MediaQuery.of(context).size.width,
@@ -53,7 +93,6 @@ class _FindJobsState extends State<FindJobs> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                
                   Expanded(
                       child: GestureDetector(
                     onTap: () {
@@ -61,11 +100,12 @@ class _FindJobsState extends State<FindJobs> {
                       //     builder: (context) => const AllJobDetails()));
                     },
                     child: ListView.builder(
-                      itemCount: 4,
+                     itemCount: getJobsModel.data!.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EmployeeJobDetails()));
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const EmployeeJobDetails()));
                           },
                           child: Card(
                             elevation: 1,
@@ -74,14 +114,23 @@ class _FindJobsState extends State<FindJobs> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/job_pic.png',
+                                  ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.fill,
+                                    placeholder: (context, url) => const Center(
+                                        child: CircularProgressIndicator()),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                    imageUrl:
+                                        "$baseImageURL${getJobsModel.data![index].image}",
                                     width: 146,
-                                    height: 96,
+                                    height: 97,
                                   ),
+                                ),
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 3),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 3),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -91,11 +140,13 @@ class _FindJobsState extends State<FindJobs> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Eleanor Pena',
+                                              getJobsModel.data![index].name
+                                                  .toString(),
                                               style: GoogleFonts.outfit(
                                                   textStyle: const TextStyle(
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: Colors.black)),
                                             ),
                                             const SizedBox(
@@ -106,7 +157,8 @@ class _FindJobsState extends State<FindJobs> {
                                           ],
                                         ),
                                         Text(
-                                          'Mar 03, 2023',
+                                           getJobsModel.data![index].jobDate
+                                            .toString(),
                                           style: GoogleFonts.outfit(
                                               textStyle: const TextStyle(
                                                   fontSize: 8,
@@ -168,7 +220,8 @@ class _FindJobsState extends State<FindJobs> {
                                                             'Accept',
                                                             style: GoogleFonts.outfit(
                                                                 textStyle: const TextStyle(
-                                                                    fontSize: 12,
+                                                                    fontSize:
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w400,
@@ -188,8 +241,9 @@ class _FindJobsState extends State<FindJobs> {
                                                   height: 33,
                                                   width: 81,
                                                   decoration: BoxDecoration(
-                                                      color: const Color.fromARGB(
-                                                          255, 230, 40, 19),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 230, 40, 19),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               6)),
@@ -202,7 +256,8 @@ class _FindJobsState extends State<FindJobs> {
                                                             'Skip',
                                                             style: GoogleFonts.outfit(
                                                                 textStyle: const TextStyle(
-                                                                    fontSize: 12,
+                                                                    fontSize:
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w400,
@@ -229,7 +284,7 @@ class _FindJobsState extends State<FindJobs> {
             ),
           ))
         ],
-      ),
+      ):const Center(child:  CircularProgressIndicator()),
     );
   }
 }

@@ -270,6 +270,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   
                                 ),
                                 const Divider(
+                                  
                                   thickness: 0,
                                 )
                               ],
