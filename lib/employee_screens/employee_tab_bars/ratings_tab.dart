@@ -12,11 +12,14 @@ class RatingsTab extends StatefulWidget {
 class _RatingsTabState extends State<RatingsTab> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(children: [
-        SizedBox(height: 20,),
-         Expanded(
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(
             child: ListView.builder(
                 itemCount: 5,
                 itemBuilder: (context, index) {
@@ -47,7 +50,11 @@ class _RatingsTabState extends State<RatingsTab> {
                         ),
                         Row(
                           children: [
-                            SvgPicture.asset('assets/images/star.svg',height: 12,width: 12,),
+                            SvgPicture.asset(
+                              'assets/images/star.svg',
+                              height: 12,
+                              width: 12,
+                            ),
                             const SizedBox(
                               width: 1,
                             ),
@@ -66,7 +73,8 @@ class _RatingsTabState extends State<RatingsTab> {
                   );
                 }),
           )
-      ],),
+        ],
+      ),
     );
   }
 }

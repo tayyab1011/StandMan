@@ -124,6 +124,7 @@ class _JobDetailsState extends State<JobDetails> {
       prefs!.setString('job_date', jobCreate.data![0].jobDate.toString());
       prefs!.setString('name', jobCreate.data![0].name.toString());
       prefs!.setString('image', jobCreate.data![0].image.toString());
+      
       }
       var job_date = prefs!.getString('job_date');
     // ignore: unnecessary_brace_in_string_interps

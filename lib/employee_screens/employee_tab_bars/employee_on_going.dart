@@ -13,10 +13,8 @@ class EmployeeOnGoing extends StatefulWidget {
 }
 
 class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedIndex = 0;
-
-  bool _isLoading = false;
+  
   changeSelectedIndex(int index) {
     setState(() {
       selectedIndex = index;

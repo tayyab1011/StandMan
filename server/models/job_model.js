@@ -8,5 +8,6 @@ const userSchema = mongoose.Schema({
     end_time: { type: String, },
     special_instructions: { type: String,},
     image: { type: String, },
+    status: { type: String, default: 'pending' },
 })
 module.exports = mongoose.model('Job',userSchema);

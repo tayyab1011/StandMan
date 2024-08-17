@@ -23,7 +23,9 @@ class _InfoTabState extends State<InfoTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Center(
               child: Container(
                 height: 145,
@@ -102,33 +104,32 @@ class _InfoTabState extends State<InfoTab> {
                             ),
                           ],
                         ),
-                         const SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
-                        children: [
-                          RatingBar.builder(
-                              minRating: 1,
-                              initialRating: 1,
-                              allowHalfRating: true,
-                              
-                              itemCount: 5,
-                              itemSize: 17,
-                              itemBuilder: (context, index) => const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                              onRatingUpdate: (value) {}),
-                          Text(
-                            '4.5',
-                            style: GoogleFonts.outfit(
-                                textStyle: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white)),
-                          ),
-                        ],
-                      )
+                          children: [
+                            RatingBar.builder(
+                                minRating: 1,
+                                initialRating: 1,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 17,
+                                itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                onRatingUpdate: (value) {}),
+                            Text(
+                              '4.5',
+                              style: GoogleFonts.outfit(
+                                  textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white)),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -194,10 +195,10 @@ class _InfoTabState extends State<InfoTab> {
                               context: context,
                               isScrollControlled: true,
                               builder: (context) {
-                                return const SingleChildScrollView(child: EmployeeNotification());
+                                return const SingleChildScrollView(
+                                    child: EmployeeNotification());
                               });
                         },
-
                         horizontalTitleGap: 23,
                         leading: SvgPicture.asset(
                           'assets/images/notification_blue.svg',
@@ -219,14 +220,15 @@ class _InfoTabState extends State<InfoTab> {
                       color: Colors.white,
                       elevation: 0.2,
                       child: ListTile(
-                          onTap: (){
+                          onTap: () {
                             showModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              isScrollControlled: true,
-                              context: context, builder: (context){
-                              return const SingleChildScrollView(child:  EmployeeDeleteAccount());
-
-                            });
+                                backgroundColor: Colors.white,
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (context) {
+                                  return const SingleChildScrollView(
+                                      child: EmployeeDeleteAccount());
+                                });
                           },
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 10),

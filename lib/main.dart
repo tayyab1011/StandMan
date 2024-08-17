@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:standman/on_boarding/splash_screen.dart';
-
-
+import 'package:standman/auth_screens/tab_screens.dart';
 
 
 
@@ -20,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: TabScreens(),
     );
   }
 }

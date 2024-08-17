@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/employee_screens/employee_models/employee_signin_model.dart';
@@ -26,43 +26,32 @@ class _AdminScreenState extends State<AdminScreen> {
   bool _isLoading = false;
   EmployeeSignIn employeeSignInModel = EmployeeSignIn();
 
+  employeeSignIn() async {
+    var headersList = {'Accept': '*/*', 'Content-Type': 'application/json'};
+    var url = Uri.parse('${baseImageURL}api/employee_signin');
 
-  employeeSignIn() async{
-    var headersList = {
- 'Accept': '*/*',
- 'Content-Type': 'application/json' 
-};
-var url = Uri.parse('${baseImageURL}api/employee_signin');
+    var body = {"email": emailController.text, "password": passController.text};
 
-var body = {
-  "email":emailController.text,
-  "password":passController.text
-};
+    var req = http.Request('POST', url);
+    req.headers.addAll(headersList);
+    req.body = json.encode(body);
 
-var req = http.Request('POST', url);
-req.headers.addAll(headersList);
-req.body = json.encode(body);
+    var res = await req.send();
+    final resBody = await res.stream.bytesToString();
 
-
-var res = await req.send();
-final resBody = await res.stream.bytesToString();
-
-if (res.statusCode == 200) {
-  
-  employeeSignInModel = employeeSignInFromJson(resBody);
-   prefs = await SharedPreferences.getInstance();
-  prefs!.setString('employee_id', employeeSignInModel.data![0].id.toString());
-  if(mounted){
-    setState(() {
-      
-    });
-  }
-  print(resBody);
-}
-else {
-  employeeSignInModel = employeeSignInFromJson(resBody);
-  print(res.reasonPhrase);
-}
+    if (res.statusCode == 200) {
+      employeeSignInModel = employeeSignInFromJson(resBody);
+      prefs = await SharedPreferences.getInstance();
+      prefs!
+          .setString('employee_id', employeeSignInModel.data![0].id.toString());
+      if (mounted) {
+        setState(() {});
+      }
+      print(resBody);
+    } else {
+      employeeSignInModel = employeeSignInFromJson(resBody);
+      print(res.reasonPhrase);
+    }
   }
 
   @override
@@ -73,10 +62,7 @@ else {
           child: Center(
         child: SingleChildScrollView(
           child: Column(
-
             children: [
-             
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Form(
@@ -89,8 +75,9 @@ else {
                         "Email",
                         style: GoogleFonts.outfit(
                             textStyle: const TextStyle(
-                               color: GlobalVariables.textColor,
-                                fontSize: 16, fontWeight: FontWeight.w300)),
+                                color: GlobalVariables.textColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300)),
                       ),
                       TextFormField(
                         controller: emailController,
@@ -102,12 +89,12 @@ else {
                         },
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
-                          
-                           prefixIcon: Padding(
-                          padding: const EdgeInsets.all(11.0),
-                          child: SvgPicture.asset("assets/images/email.svg",
-                          ),
-                        ),
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.all(11.0),
+                              child: SvgPicture.asset(
+                                "assets/images/email.svg",
+                              ),
+                            ),
                             hintText: 'Email',
                             hintStyle: const TextStyle(
                               color: GlobalVariables.iconColor,
@@ -131,8 +118,9 @@ else {
                         "Password",
                         style: GoogleFonts.outfit(
                             textStyle: const TextStyle(
-                              color: GlobalVariables.textColor,
-                                fontSize: 16, fontWeight: FontWeight.w300)),
+                                color: GlobalVariables.textColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300)),
                       ),
                       TextFormField(
                         obscureText: _obsecureText,
@@ -140,10 +128,11 @@ else {
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
                             prefixIcon: Padding(
-                          padding: const EdgeInsets.all(11.0),
-                          child: SvgPicture.asset("assets/images/lock.svg",
-                          ),
-                        ),
+                              padding: const EdgeInsets.all(11.0),
+                              child: SvgPicture.asset(
+                                "assets/images/lock.svg",
+                              ),
+                            ),
                             suffixIcon: IconButton(
                                 color: GlobalVariables.iconColor,
                                 onPressed: () {
@@ -155,11 +144,9 @@ else {
                                     ? const Icon(Icons.visibility_off)
                                     : const Icon(Icons.visibility)),
                             hintText: 'Password',
-                            
                             hintStyle: const TextStyle(
-                              fontWeight: FontWeight.normal,
-                              color: GlobalVariables.iconColor
-                            ),
+                                fontWeight: FontWeight.normal,
+                                color: GlobalVariables.iconColor),
                             focusedBorder: OutlineInputBorder(
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(12)),
@@ -201,17 +188,17 @@ else {
               ),
               GestureDetector(
                   onTap: () async {
-                    if(emailController.text.isNotEmpty && passController.text.isNotEmpty){
+                    if (emailController.text.isNotEmpty &&
+                        passController.text.isNotEmpty) {
                       await employeeSignIn();
-                      if(employeeSignInModel.status == 'success'){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const EmployeeMainScreen()));
+                      if (employeeSignInModel.status == 'success') {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => const EmployeeMainScreen()));
                         CustomToast.showToast(message: 'Log In Successful');
-                      }
-                      else{
+                      } else {
                         CustomToast.showToast(message: 'Log In Failed');
                       }
-                    }
-                    else{
+                    } else {
                       CustomToast.showToast(message: 'All fields Required');
                     }
                   },
@@ -304,7 +291,7 @@ else {
                       child: Text(
                         'Register here',
                         style: GoogleFonts.outfit(
-                            textStyle:  const TextStyle(
+                            textStyle: const TextStyle(
                                 color: GlobalVariables.buttonColor,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500)),
@@ -318,5 +305,3 @@ else {
     );
   }
 }
-
-  

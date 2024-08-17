@@ -57,82 +57,80 @@ class _MyJobsState extends State<MyJobs> {
           ),
           backgroundColor: GlobalVariables.buttonColor,
           body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                color: Colors.white,
-              ),
-              child:  Column(
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              color:Colors.grey.shade50,
-              
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: TabBar(
-                
-                labelStyle: GoogleFonts.outfit(
-                  textStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+            children: [
+              Expanded(
+                  child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
                   ),
+                  color: Colors.white,
                 ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerHeight: 0,
-                unselectedLabelColor: Colors.grey, // Grey color for unselected tabs
-                labelColor: Colors.black, // Black color for selected tab
-                indicator: BoxDecoration(
-                  color: Colors.white, // Background color of the selected tab
-                  borderRadius: BorderRadius.circular(15.0), // Rounded corners for the selected tab
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(66, 99, 93, 93), // Shadow color
-                      offset: Offset(0, 1), // Shadow offset
-                      blurRadius: 4.0, // Shadow blur radius
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: Colors.grey.shade50,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: TabBar(
+                          labelStyle: GoogleFonts.outfit(
+                            textStyle: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          dividerHeight: 0,
+                          unselectedLabelColor:
+                              Colors.grey, // Grey color for unselected tabs
+                          labelColor:
+                              Colors.black, // Black color for selected tab
+                          indicator: BoxDecoration(
+                            color: Colors
+                                .white, // Background color of the selected tab
+                            borderRadius: BorderRadius.circular(
+                                15.0), // Rounded corners for the selected tab
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(
+                                    66, 99, 93, 93), // Shadow color
+                                offset: Offset(0, 1), // Shadow offset
+                                blurRadius: 4.0, // Shadow blur radius
+                              ),
+                            ],
+                          ),
+                          tabs: const [
+                            Tab(
+                              child: Center(child: Text('My Jobs')),
+                            ),
+                            Tab(
+                              child: Center(child: Text('On Going')),
+                            ),
+                            Tab(
+                              child: Center(child: Text('Previous')),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                      child: TabBarView(children: [
+                        MyJobsTab(),
+                        OnGoingJobs(),
+                        PreviousJobs()
+                      ]),
+                    )
                   ],
                 ),
-                tabs: const [
-                   Tab(
-                    child: Center(child: Text('My Jobs')),
-                  ),
-                  Tab(
-                    child: Center(child: Text('On Going')),
-                  ),
-                  Tab(
-                    child: Center(child: Text('Previous')),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Expanded(
-            child: TabBarView(children: [
-              MyJobsTab(),
-              OnGoingJobs(),    
-              PreviousJobs()
-              
-            ]),
-          )
-        ],
-      ),
-            
-          
-        
-      
               ))
             ],
           ),
