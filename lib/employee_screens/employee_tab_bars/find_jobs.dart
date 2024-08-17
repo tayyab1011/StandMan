@@ -6,11 +6,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:standman/employee_screens/employee_models/accept_jobs_model.dart';
 import 'package:standman/employee_screens/home_screens/employee_job_details.dart';
 import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
-
+import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/main.dart';
 import 'package:standman/models/get_jobs_model.dart';
 
@@ -26,6 +26,7 @@ class _FindJobsState extends State<FindJobs> {
   int selectedIndex = 0;
   GetJobsModel getJobsModel = GetJobsModel();
   bool _isLoading = false;
+  AcceptJobs acceptedJobsModel = AcceptJobs();
 
 
   getJobs() async {
@@ -57,7 +58,42 @@ class _FindJobsState extends State<FindJobs> {
   }
 
   /////////////////////////////////////////////////////////////
-String? jobsId;
+
+
+acceptJobs(String jobsId) async{
+  var headersList = {
+ 'Accept': '*/*',
+ 'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('${baseImageURL}api/acceptjobs');
+
+
+prefs = await SharedPreferences.getInstance();
+    var employee_id = prefs!.getString('employee_id');
+
+var body = {
+  "users_customers_id":employee_id,
+  "jobs_id":jobsId
+};
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200 ) {
+  acceptedJobsModel = acceptJobsFromJson(resBody);
+  print(resBody);
+}
+else {
+  print(res.reasonPhrase);
+  acceptedJobsModel = acceptJobsFromJson(resBody);
+}
+}
  
 
   changeSelectedIndex(int index) {
@@ -70,7 +106,6 @@ String? jobsId;
   void initState() {
     super.initState();
     getJobs();
-    debugPrint('Hullalallalallallalala');
     
   }
 
@@ -108,9 +143,7 @@ String? jobsId;
                             itemCount: getJobsModel.data!.length,
                             itemBuilder: (context, index) {
                               var item = getJobsModel.data![getJobsModel.data!.length - 1- index];
-
-
-                               jobsId = getJobsModel.data![index].id;
+                              
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -154,20 +187,21 @@ String? jobsId;
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    item.name.toString(),
-                                                    style: GoogleFonts.outfit(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black)),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 67,
+                                                  SizedBox(
+                                                    width: 140,
+
+                                                    child: Text(
+                                                      item.name.toString(),
+                                                      style: GoogleFonts.outfit(
+                                                          textStyle:
+                                                              const TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black)),
+                                                    ),
                                                   ),
                                                   SvgPicture.asset(
                                                       'assets/images/more.svg')
@@ -222,11 +256,14 @@ String? jobsId;
                                                 children: [
                                                   GestureDetector(
                                                       onTap: () async {
-                                                      // //  await aceeptedJobsEmployee();
-                                                      //   if(acceptJobs.status=='suceess'){
-                                                      //    // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AcceptedJobs()));
-                                                      //     CustomToast.showToast(message: 'Job is Accepted');
-                                                      //   }
+                                                      await acceptJobs(item.id.toString());
+                                                        if(acceptedJobsModel.staus=='success'){
+                                                        // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const AcceptedJobs()));
+                                                          CustomToast.showToast(message: 'Job is Accepted');
+                                                        }
+                                                        else{
+                                                         CustomToast.showToast(message: 'Job is  Already Accepted'); 
+                                                        }
                                                         
                                                       },
                                                       child: Container(

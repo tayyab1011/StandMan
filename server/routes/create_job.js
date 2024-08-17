@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const Job = require('../models/job_model');
-
+const AcceptJobs = require('../models/accepted_jobs_model');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './job_uploads');
@@ -63,6 +63,58 @@ jobRoutes.post('/api/getJobs', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error });
   }
+})
+jobRoutes.post('/api/acceptJobs', async (req, res) => {
+  try {
+    const { jobs_id, users_customers_id } = req.body;
+    const jobs = await Job.findOne({ _id: jobs_id })
+    if (!jobs) {
+      return res.status(404).json({ msg: 'No jobs found' });
+    }
+    
+    const acceptedJobs = await AcceptJobs.findOne({ jobs_id })
+    if (acceptedJobs) {
+      return res.status(404).json({ msg: 'Job is already Accepted' });
+    }
+    // const name = jobs.job_date;
+    const newAcceptJobs = new AcceptJobs({
+      jobs_id,
+      users_customers_id,
+      name: jobs.name,
+      job_date: jobs.job_date,
+      start_time: jobs.start_time,
+      end_time: jobs.end_time,
+      special_instructions: jobs.special_instructions,
+      image: jobs.image
+
+    });
+    await newAcceptJobs.save();
+  
+    jobs.status = 'accepted'
+    await jobs.save();
+    res.status(200).json({ staus: "success", code: 200, data: newAcceptJobs });
+  } catch (error) {
+    res.status(500).json({ error: error });
+
+  }
+})
+jobRoutes.post('/api/getAcceptedJobs', async (req, res) => {
+
+  try {
+    const { users_customers_id } = req.body;
+  const getJobs = await AcceptJobs.find({ users_customers_id })
+  if (!getJobs) {
+    return res.status(404).json({ msg: 'No jobs found' });
+  }
+  res.status(200).json({
+    code: 200,
+    status: "success",
+    data: getJobs
+  });
+  } catch (error) {
+    es.status(500).json({ error: error });
+  }
+
 })
 
 

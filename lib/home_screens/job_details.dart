@@ -124,6 +124,7 @@ class _JobDetailsState extends State<JobDetails> {
       prefs!.setString('job_date', jobCreate.data![0].jobDate.toString());
       prefs!.setString('name', jobCreate.data![0].name.toString());
       prefs!.setString('image', jobCreate.data![0].image.toString());
+      prefs!.setString('job_id', jobCreate.data![0].id.toString());
       
       }
       var job_date = prefs!.getString('job_date');

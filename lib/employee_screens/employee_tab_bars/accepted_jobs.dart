@@ -1,12 +1,16 @@
+import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart'as http;
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:standman/employee_screens/employee_models/get_accepted_jobs.dart';
 import 'package:standman/employee_screens/home_screens/employee_job_details.dart';
+import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
-
+import 'package:standman/main.dart';
 
 class AcceptedJobs extends StatefulWidget {
   const AcceptedJobs({super.key});
@@ -16,22 +20,62 @@ class AcceptedJobs extends StatefulWidget {
 }
 
 class _AcceptedJobsState extends State<AcceptedJobs> {
+  GetAcceptedJobs getAcceptedJobsModel = GetAcceptedJobs();
   bool _isLoading = false;
+
+
+  getAcceptedJobs() async{
+    var headersList = {
+ 'Accept': '*/*',
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('${baseImageURL}api/getAcceptedJobs');
+prefs = await SharedPreferences.getInstance();
+    var employee_id= prefs!.getString('employee_id');
+var body = {
+  "users_customers_id":employee_id
+};
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200 ) {
+  getAcceptedJobsModel = getAcceptedJobsFromJson(resBody);
+  print(resBody);
+  if(mounted){
+    setState(() {
+      
+    });
+  }
+}
+else {
+  getAcceptedJobsModel = getAcceptedJobsFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
+
+  @override
+  void initState() {
+  
+    super.initState();
+    getAcceptedJobs();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      
-      
-      
-      
-    
-      body: Column(
+      body:getAcceptedJobsModel.data !=null? Column(
         children: [
-          
           Expanded(
               child: Container(
             width: MediaQuery.of(context).size.width,
@@ -46,7 +90,6 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                
                   Expanded(
                       child: GestureDetector(
                     onTap: () {
@@ -54,11 +97,13 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                       //     builder: (context) => const AllJobDetails()));
                     },
                     child: ListView.builder(
-                      itemCount: 4,
+                    itemCount: getAcceptedJobsModel.data!.length,
                       itemBuilder: (context, index) {
+                        var item = getAcceptedJobsModel.data![getAcceptedJobsModel.data!.length-1-index];
                         return GestureDetector(
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EmployeeJobDetails()));
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const EmployeeJobDetails()));
                           },
                           child: Card(
                             elevation: 1,
@@ -67,14 +112,27 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/job_pic.png',
-                                    width: 146,
-                                    height: 96,
-                                  ),
+                                  ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.fill,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                                    child:
+                                                        CircularProgressIndicator()),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                            imageUrl:
+                                                "$baseImageURL${item.image}",
+                                            width: 146,
+                                            height: 97,
+                                          ),
+                                        ),
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 3),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 3),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -83,23 +141,26 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              'Eleanor Pena',
-                                              style: GoogleFonts.outfit(
-                                                  textStyle: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: Colors.black)),
+                                            SizedBox(
+                                              width: 140,
+                                          
+                                              child: Text(
+                                                item.name.toString(),
+                                                style: GoogleFonts.outfit(
+                                                    textStyle: const TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.black)),
+                                              ),
                                             ),
-                                            const SizedBox(
-                                              width: 67,
-                                            ),
+                                            
                                             SvgPicture.asset(
                                                 'assets/images/more.svg')
                                           ],
                                         ),
                                         Text(
-                                          'Mar 03, 2023',
+                                         item.jobDate.toString(),
                                           style: GoogleFonts.outfit(
                                               textStyle: const TextStyle(
                                                   fontSize: 8,
@@ -161,7 +222,8 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                                                             'Start',
                                                             style: GoogleFonts.outfit(
                                                                 textStyle: const TextStyle(
-                                                                    fontSize: 12,
+                                                                    fontSize:
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w400,
@@ -181,8 +243,9 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                                                   height: 33,
                                                   width: 81,
                                                   decoration: BoxDecoration(
-                                                      color: const Color.fromARGB(
-                                                          255, 230, 40, 19),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 230, 40, 19),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               6)),
@@ -195,7 +258,8 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
                                                             'Cancel',
                                                             style: GoogleFonts.outfit(
                                                                 textStyle: const TextStyle(
-                                                                    fontSize: 12,
+                                                                    fontSize:
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w400,
@@ -222,7 +286,7 @@ class _AcceptedJobsState extends State<AcceptedJobs> {
             ),
           ))
         ],
-      ),
+      ):const Center(child: CircularProgressIndicator(),),
     );
   }
 }
