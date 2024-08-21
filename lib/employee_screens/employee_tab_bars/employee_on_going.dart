@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:standman/employee_screens/employee_models/get_ongoing.dart';
 import 'package:standman/employee_screens/home_screens/employee_job_details.dart';
+import 'package:standman/global_variables/base_urls.dart';
+import 'package:standman/main.dart';
 
 
 class EmployeeOnGoing extends StatefulWidget {
@@ -14,11 +21,56 @@ class EmployeeOnGoing extends StatefulWidget {
 
 class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
   int selectedIndex = 0;
+  GetGoingJobsModel getGoingJobsModel =  GetGoingJobsModel();
+
+  //get on going jobs
+  getOnGoing() async{
+    var headersList = {
+ 'Accept': '*/*',
+ 'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('${baseImageURL}api/ongoingjobs');
+prefs = await SharedPreferences.getInstance();
+    var employee_id= prefs!.getString('employee_id');
+
+var body = {
+  "users_customers_id": employee_id
+};
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200) {
+  getGoingJobsModel = getGoingJobsModelFromJson(resBody);
+  if(mounted){
+    setState(() {
+      
+    });
+  }
+  print(resBody);
+}
+else {
+  getGoingJobsModel = getGoingJobsModelFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
   
   changeSelectedIndex(int index) {
     setState(() {
       selectedIndex = index;
     });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getOnGoing();
   }
 
   @override
@@ -28,7 +80,7 @@ class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      body: Column(
+      body:getGoingJobsModel.data !=null ? Column(
         children: [
           Expanded(
               child: Container(
@@ -46,8 +98,9 @@ class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
                 children: [
                   Expanded(
                       child: ListView.builder(
-                        itemCount: 4,
+                        itemCount: getGoingJobsModel.data!.length,
                         itemBuilder: (context, index) {
+                           var item = getGoingJobsModel.data![getGoingJobsModel.data!.length - 1- index];
                           return GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -60,11 +113,24 @@ class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: [
-                                    Image.asset(
-                                      'assets/images/job_pic.png',
-                                      width: 146,
-                                      height: 96,
-                                    ),
+                                     ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.fill,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                                    child:
+                                                        CircularProgressIndicator()),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                            imageUrl:
+                                                "$baseImageURL${item.image}",
+                                            width: 146,
+                                            height: 97,
+                                          ),
+                                        ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 4),
@@ -77,7 +143,7 @@ class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                'Eleanor Pena',
+                                                 item.name.toString(),
                                                 style: GoogleFonts.outfit(
                                                     textStyle: const TextStyle(
                                                         fontSize: 12,
@@ -93,7 +159,7 @@ class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
                                             ],
                                           ),
                                           Text(
-                                            'Mar 03, 2023',
+                                            item.jobDate.toString(),
                                             style: GoogleFonts.outfit(
                                                 textStyle: const TextStyle(
                                                     fontSize: 8,
@@ -166,7 +232,7 @@ class _EmployeeOnGoingState extends State<EmployeeOnGoing> {
             ),
           ))
         ],
-      ),
+      ):const Center(child: CircularProgressIndicator(),),
     );
   }
 }

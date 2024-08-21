@@ -82,8 +82,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
             DrawerHeader(
                 margin: const EdgeInsets.only(bottom: 0.0),
                 child: Column(
-                  children: [
-                    
+                  children: [      
                 Image.asset(
               'assets/images/women.png',
               height: 83,

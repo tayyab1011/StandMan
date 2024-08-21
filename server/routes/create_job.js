@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const Job = require('../models/job_model');
 const AcceptJobs = require('../models/accepted_jobs_model');
+const StartJobs = require('../models/start_job_model');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './job_uploads');
@@ -112,9 +113,74 @@ jobRoutes.post('/api/getAcceptedJobs', async (req, res) => {
     data: getJobs
   });
   } catch (error) {
-    es.status(500).json({ error: error });
+    res.status(500).json({ error: error });
   }
 
+})
+jobRoutes.post('/api/startjobs', async (req, res) => {
+  try {
+    const { users_customers_id, jobs_id, jobs_requests_id } = req.body;
+
+    // Find the accepted job using the correct query
+    const acceptedJob = await AcceptJobs.findOne({ jobs_id });
+
+    // Check if the job is found
+    if (!acceptedJob) {
+      return res.status(404).json({ msg: 'No jobs found' });
+    }
+
+    // Check if the job is already started
+    const ongoing = await StartJobs.findOne({ jobs_id });
+    if (ongoing) {
+      return res.status(400).json({ msg: 'Job is already started' });
+    }
+
+    // Create the new ongoing job
+    const onGoingJob = new StartJobs({
+      users_customers_id,
+      jobs_requests_id,
+      jobs_id,
+      name: acceptedJob.name,
+      job_date: acceptedJob.job_date,
+      start_time: acceptedJob.start_time,
+      end_time: acceptedJob.end_time,
+      special_instructions: acceptedJob.special_instructions,
+      image: acceptedJob.image
+    });
+
+    // Set the status to 'ongoing'
+    onGoingJob.status = 'ongoing';
+
+    // Save the job
+    await onGoingJob.save();
+
+    // Send success response
+    res.status(200).json({
+      code: 200,
+      status: "success",
+      data: onGoingJob
+    });
+
+  } catch (error) {
+    // Handle errors
+    res.status(500).json({ error: error.message });
+  }
+});
+jobRoutes.post('/api/ongoingjobs', async (req, res)=>{
+ try {
+  const {users_customers_id} = req.body;
+  const ongoingjobs = await StartJobs.find({users_customers_id});
+  if(!ongoingjobs){
+    return res.status(400).json({ msg: 'No Job found' });
+  }
+  res.status(200).json({
+    code: 200,
+    status: "success",
+    data: ongoingjobs
+  });
+ } catch (error) {
+  res.status(500).json({ error: error.message });
+ }
 })
 
 

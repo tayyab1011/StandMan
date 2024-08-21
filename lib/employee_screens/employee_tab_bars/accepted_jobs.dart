@@ -7,9 +7,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:standman/employee_screens/employee_models/get_accepted_jobs.dart';
+import 'package:standman/employee_screens/employee_models/ongoing_model.dart';
 import 'package:standman/employee_screens/home_screens/employee_job_details.dart';
 import 'package:standman/global_variables/base_urls.dart';
 import 'package:standman/global_variables/global_variables.dart';
+import 'package:standman/helper/custom_toast.dart';
 import 'package:standman/main.dart';
 
 class AcceptedJobs extends StatefulWidget {
@@ -21,9 +23,10 @@ class AcceptedJobs extends StatefulWidget {
 
 class _AcceptedJobsState extends State<AcceptedJobs> {
   GetAcceptedJobs getAcceptedJobsModel = GetAcceptedJobs();
+  OnGoingJobsModel onGoingJobsModel = OnGoingJobsModel();
   bool _isLoading = false;
 
-
+//get accepted jobs api
   getAcceptedJobs() async{
     var headersList = {
  'Accept': '*/*',
@@ -55,6 +58,46 @@ if (res.statusCode == 200 ) {
 }
 else {
   getAcceptedJobsModel = getAcceptedJobsFromJson(resBody);
+  print(res.reasonPhrase);
+}
+  }
+
+
+  //On going jobs Api
+  onGoingJobs(String jobsID) async{
+    var headersList = {
+ 'Accept': '*/*',
+ 'Content-Type': 'application/json' 
+};
+var url = Uri.parse('${baseImageURL}api/startjobs');
+prefs = await SharedPreferences.getInstance();
+    var employee_id= prefs!.getString('employee_id');
+
+var body = {
+    "jobs_requests_id": "353",
+    "jobs_id": jobsID,
+    "users_customers_id": employee_id
+};
+
+var req = http.Request('POST', url);
+req.headers.addAll(headersList);
+req.body = json.encode(body);
+
+
+var res = await req.send();
+final resBody = await res.stream.bytesToString();
+
+if (res.statusCode == 200 ) {
+  onGoingJobsModel = onGoingJobsModelFromJson(resBody);
+  if(mounted){
+    setState(() {
+      
+    });
+  }
+  print(resBody);
+}
+else {
+  onGoingJobsModel = onGoingJobsModelFromJson(resBody);
   print(res.reasonPhrase);
 }
   }
@@ -202,7 +245,13 @@ else {
                                           children: [
                                             GestureDetector(
                                                 onTap: () async {
-                                                  //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AddRatings()));
+                                                  await onGoingJobs(item.jobsId.toString());
+                                                if(onGoingJobsModel.status == 'success'){
+                                                  CustomToast.showToast(message: "Job Is Started");
+                                                }
+                                                else{
+                                                  CustomToast.showToast(message: "Job Is already Started");
+                                                }
                                                 },
                                                 child: Container(
                                                   height: 33,
@@ -237,7 +286,7 @@ else {
                                             ),
                                             GestureDetector(
                                                 onTap: () async {
-                                                  //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AddRatings()));
+                                                
                                                 },
                                                 child: Container(
                                                   height: 33,
